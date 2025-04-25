@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>故事收集平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6D4C41;
+            --primary-light: #9C786C;
+            --primary-dark: #40241A;
+            --accent-color: #FFC107;
+            --background-color: #F5F5F5;
+            --surface-color: #FFFFFF;
+            --text-primary: #212121;
+            --text-secondary: #757575;
+            --text-hint: #9E9E9E;
+            --text-on-primary: #FFFFFF;
+            --border-color: #EEEEEE;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --card-radius: 16px;
+            --button-radius: 24px;
+            --transition-time: 0.3s;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        body {
+            color: var(--text-primary);
+            background-color: var(--background-color);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-radius: var(--card-radius);
+            margin-bottom: 24px;
+            background-color: var(--surface-color);
+            box-shadow: 0 4px 12px var(--shadow-color);
+            position: relative;
+            z-index: 100;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            margin-right: 24px;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+        
+        .search-bar {
+            flex-grow: 1;
+            position: relative;
+            margin: 0;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: var(--button-radius);
+            border: 2px solid var(--border-color);
+            font-size: 16px;
+            padding-left: 44px;
+            transition: all var(--transition-time);
+            background-color: var(--background-color);
+        }
+        
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(109, 76, 65, 0.2);
+        }
+        
+        .search-bar i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-hint);
+        }
+        
+        .user-actions {
+            display: none; /* 隐藏用户操作按钮 */
+        }
+        
+        /* 主内容区域 */
+        .main-content {
+            flex-grow: 1;
+        }
+        
+        .filters {
+            display: flex;
+            justify-content: space-between;
+            background-color: var(--surface-color);
+            padding: 20px;
+            border-radius: var(--card-radius);
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        
+        .filter-tags {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-tag {
+            padding: 8px 20px;
+            border-radius: var(--button-radius);
+            font-size: 14px;
+            cursor: pointer;
+            white-space: nowrap;
+            color: var(--text-primary);
+            background-color: var(--background-color);
+            transition: all var(--transition-time);
+            font-weight: 500;
+        }
+        
+        .filter-tag:hover {
+            background-color: rgba(109, 76, 65, 0.1);
+        }
+        
+        .filter-tag.active {
+            background-color: var(--primary-color);
+            color: var(--text-on-primary);
+        }
+        
+        .sort-options {
+            display: flex;
+            align-items: center;
+            color: var(--text-secondary);
+        }
+        
+        .sort-options select {
+            padding: 8px 16px;
+            border-radius: var(--button-radius);
+            border: 2px solid var(--border-color);
+            font-size: 14px;
+            margin-left: 8px;
+            background-color: var(--surface-color);
+            cursor: pointer;
+            transition: all var(--transition-time);
+        }
+        
+        .sort-options select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        /* 内容卡片区域 */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        
+        .content-card {
+            background-color: var(--surface-color);
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            box-shadow: 0 6px 16px var(--shadow-color);
+            transition: all var(--transition-time);
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .content-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px var(--shadow-color);
+        }
+        
+        .card-thumbnail {
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform var(--transition-time);
+        }
+        
+        .content-card:hover .card-thumbnail img {
+            transform: scale(1.05);
+        }
+        
+        .card-thumbnail::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+        }
+        
+        .account-avatar {
+            position: absolute;
+            right: 20px;
+            bottom: -20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid var(--surface-color);
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow: 0 4px 8px var(--shadow-color);
+            color: var(--text-on-primary);
+        }
+        
+        .card-info {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.5;
+            height: 3em;
+            color: var(--text-primary);
+        }
+        
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: auto;
+        }
+        
+        .account-name {
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            font-weight: 500;
+        }
+        
+        .card-stats {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .card-stats span {
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-stats span i {
+            margin-right: 6px;
+            color: var(--primary-color);
+        }
+        
+        .card-category {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+            padding: 4px 12px;
+            border-radius: var(--button-radius);
+            font-size: 12px;
+            font-weight: 700;
+            z-index: 1;
+        }
+        
+        /* 阅读页面样式 */
+        .article-view {
+            display: none;
+            background-color: var(--surface-color);
+            border-radius: var(--card-radius);
+            padding: 40px;
+            box-shadow: 0 6px 16px var(--shadow-color);
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        .article-header {
+            margin-bottom: 32px;
+        }
+        
+        .article-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            line-height: 1.3;
+            color: var(--text-primary);
+        }
+        
+        .article-meta {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            gap: 24px;
+        }
+        
+        .article-account {
+            display: flex;
+            align-items: center;
+        }
+        
+        .article-account-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            margin-right: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-on-primary);
+            box-shadow: 0 4px 8px var(--shadow-color);
+        }
+        
+        .article-account-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .article-account-name {
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .article-date {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        .article-stats {
+            display: flex;
+            gap: 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        .article-stats span {
+            display: flex;
+            align-items: center;
+        }
+        
+        .article-stats span i {
+            margin-right: 8px;
+            color: var(--primary-color);
+        }
+        
+        .article-actions {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 10px 20px;
+            border-radius: var(--button-radius);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-time);
+            border: none;
+        }
+        
+        .action-btn.primary {
+            background-color: var(--primary-color);
+            color: var(--text-on-primary);
+        }
+        
+        .action-btn.primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .action-btn.secondary {
+            background-color: var(--background-color);
+            color: var(--text-primary);
+        }
+        
+        .action-btn.secondary:hover {
+            background-color: var(--border-color);
+        }
+        
+        .article-content {
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 40px;
+            color: var(--text-primary);
+        }
+        
+        .article-content p {
+            margin-bottom: 24px;
+        }
+        
+        .article-image {
+            width: 100%;
+            max-height: 500px;
+            object-fit: cover;
+            border-radius: calc(var(--card-radius) - 4px);
+            margin: 32px 0;
+            box-shadow: 0 6px 16px var(--shadow-color);
+        }
+        
+        .back-btn {
+            position: absolute;
+            top: 3px;
+            left: 30px;
+            background: var(--background-color);
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: var(--button-radius);
+            color: var(--text-primary);
+            transition: all var(--transition-time);
+            z-index: 10;
+        }
+        
+        .back-btn:hover {
+            background-color: var(--border-color);
+            transform: translateX(-4px);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            header {
+                flex-wrap: nowrap;
+                align-items: center;
+                gap: 16px;
+            }
+            
+            .search-bar {
+                max-width: 100%;
+                width: 100%;
+                margin: 0;
+            }
+            
+            .content-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+            
+            .article-view {
+                padding: 24px 16px;
+            }
+            
+            .article-title {
+                font-size: 24px;
+                margin-top: 32px;
+            }
+            
+            .article-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            
+            .article-content {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 页面头部 -->
+        <header>
+            <div class="logo">
+                <i class="fas fa-book"></i>
+                <span>故事收藏家</span>
+            </div>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="搜索故事、作者或关键词">
+            </div>
+        </header>
+        
+        <!-- 首页视图 -->
+        <div class="home-view">
+            <div class="layout">
+                <!-- 主内容区域 -->
+                <div class="main-content">
+                    <!-- 筛选栏 -->
+                    <div class="filters">
+                        <div class="filter-tags">
+                            <div class="filter-tag active">全部</div>
+                            <div class="filter-tag">奇幻</div>
+                            <div class="filter-tag">科幻</div>
+                            <div class="filter-tag">爱情</div>
+                            <div class="filter-tag">悬疑</div>
+                            <div class="filter-tag">历史</div>
+                            <div class="filter-tag">冒险</div>
+                            <div class="filter-tag">童话</div>
+                            <div class="filter-tag">惊悚</div>
+                        </div>
+                        <div class="sort-options">
+                            <span>排序:</span>
+                            <select>
+                                <option>最新发布</option>
+                                <option>最多阅读</option>
+                                <option>最多收藏</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- 内容卡片区域 -->
+                    <div class="content-grid">
+                        <!-- 内容卡片 1 -->
+                        <div class="content-card" onclick="showArticle()">
+                            <div class="card-category">奇幻</div>
+                            <div class="card-thumbnail">
+                                <img src="https://picsum.photos/400/200?random=1" alt="故事封面">
+                                <div class="account-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">森林深处的奇妙冒险</div>
+                                <div class="card-meta">
+                                    <div class="account-name">梦幻作家</div>
+                                    <div class="card-stats">
+                                        <span><i class="far fa-eye"></i> 2.5k</span>
+                                        <span><i class="far fa-heart"></i> 156</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 内容卡片 2 -->
+                        <div class="content-card" onclick="showArticle()">
+                            <div class="card-category">科幻</div>
+                            <div class="card-thumbnail">
+                                <img src="https://picsum.photos/400/200?random=2" alt="故事封面">
+                                <div class="account-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">星际旅行者：寻找新家园</div>
+                                <div class="card-meta">
+                                    <div class="account-name">星空探索者</div>
+                                    <div class="card-stats">
+                                        <span><i class="far fa-eye"></i> 3.8k</span>
+                                        <span><i class="far fa-heart"></i> 287</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 内容卡片 3 -->
+                        <div class="content-card" onclick="showArticle()">
+                            <div class="card-category">历史</div>
+                            <div class="card-thumbnail">
+                                <img src="https://picsum.photos/400/200?random=3" alt="故事封面">
+                                <div class="account-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">古镇传说：被遗忘的秘密</div>
+                                <div class="card-meta">
+                                    <div class="account-name">历史笔记</div>
+                                    <div class="card-stats">
+                                        <span><i class="far fa-eye"></i> 1.7k</span>
+                                        <span><i class="far fa-heart"></i> 124</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 内容卡片 4 -->
+                        <div class="content-card" onclick="showArticle()">
+                            <div class="card-category">爱情</div>
+                            <div class="card-thumbnail">
+                                <img src="https://picsum.photos/400/200?random=4" alt="故事封面">
+                                <div class="account-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">心之所向：一段不可能的爱情</div>
+                                <div class="card-meta">
+                                    <div class="account-name">浪漫之心</div>
+                                    <div class="card-stats">
+                                        <span><i class="far fa-eye"></i> 3.2k</span>
+                                        <span><i class="far fa-heart"></i> 205</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 内容卡片 5 -->
+                        <div class="content-card" onclick="showArticle()">
+                            <div class="card-category">奇幻</div>
+                            <div class="card-thumbnail">
+                                <img src="https://picsum.photos/400/200?random=5" alt="故事封面">
+                                <div class="account-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">魔法学院的第一堂课</div>
+                                <div class="card-meta">
+                                    <div class="account-name">奇幻世界</div>
+                                    <div class="card-stats">
+                                        <span><i class="far fa-eye"></i> 4.5k</span>
+                                        <span><i class="far fa-heart"></i> 342</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 内容卡片 6 -->
+                        <div class="content-card" onclick="showArticle()">
+                            <div class="card-category">悬疑</div>
+                            <div class="card-thumbnail">
+                                <img src="https://picsum.photos/400/200?random=6" alt="故事封面">
+                                <div class="account-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">深夜来客：谁在敲门</div>
+                                <div class="card-meta">
+                                    <div class="account-name">悬疑之家</div>
+                                    <div class="card-stats">
+                                        <span><i class="far fa-eye"></i> 5.1k</span>
+                                        <span><i class="far fa-heart"></i> 410</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 阅读页面视图 -->
+        <div class="article-view">
+            <button class="back-btn" onclick="showHome()">
+                <i class="fas fa-arrow-left"></i>
+                <span>返回</span>
+            </button>
+            
+            <div class="article-header">
+                <h1 class="article-title">森林深处的奇妙冒险</h1>
+                
+                <div class="article-meta">
+                    <div class="article-account">
+                        <div class="article-account-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="article-account-info">
+                            <div class="article-account-name">梦幻作家</div>
+                            <div class="article-date">2023-06-15 发布</div>
+                        </div>
+                    </div>
+                    
+                    <div class="article-stats">
+                        <span><i class="far fa-eye"></i> 2,547 阅读</span>
+                        <span><i class="far fa-heart"></i> 156 收藏</span>
+                        <span><i class="far fa-comment"></i> 42 评论</span>
+                    </div>
+                </div>
+                
+                <div class="article-actions">
+                    <button class="action-btn primary">
+                        <i class="far fa-heart"></i>
+                        <span>收藏</span>
+                    </button>
+                    <button class="action-btn secondary">
+                        <i class="far fa-share-square"></i>
+                        <span>分享</span>
+                    </button>
+                    <button class="action-btn secondary">
+                        <i class="fas fa-download"></i>
+                        <span>下载</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="article-content">
+                <p>在一个被遗忘的村庄边缘，有一片神秘的森林。村里的人们总是警告孩子们不要靠近这片森林，因为据说森林里隐藏着不为人知的秘密和危险。然而，对于十二岁的小林来说，这些警告反而激起了他的好奇心。</p>
+                
+                <img src="https://picsum.photos/800/400?random=1" alt="神秘森林" class="article-image">
+                
+                <p>一个阳光明媚的周末，小林决定冒险进入森林一探究竟。他偷偷收拾了一个小背包，装上了水、面包、一把小刀和一本笔记本。在确保没有人注意到的情况下，他悄悄溜进了森林的边缘。</p>
+                
+                <p>刚开始，森林看起来和普通的森林没什么不同——高大的树木、鸟儿的歌声和微风穿过树叶的沙沙声。但随着小林越走越深入，周围的环境开始发生了微妙的变化。树木变得更加高大，树叶的颜色也更加鲜艳，甚至有些树叶闪烁着微弱的光芒。</p>
+                
+                <p>突然，小林听到了一阵奇怪的声音，像是某种生物的低语。他顺着声音走去，发现了一个小小的光球悬浮在空中。这个光球似乎注意到了小林，开始围绕着他飞舞，然后向森林深处飞去，好像在引导他前进。</p>
+                
+                <img src="https://picsum.photos/800/400?random=2" alt="神秘光球" class="article-image">
+                
+                <p>带着好奇心，小林跟随光球来到一片开阔的草地，草地中央有一棵巨大的古树，树干上刻着奇怪的符号。当小林靠近时，他惊讶地发现树干上的一部分打开了，露出一个向下的楼梯。光球飞进了这个入口，小林犹豫了一下，也跟着走了进去。</p>
+                
+                <p>楼梯通向一个地下世界，这里有一个小型的村庄，居住着各种各样的生物——身高只有小林一半的小精灵、会说话的动物和其他奇特的生物。他们告诉小林，这个世界与人类世界平行存在，但只有纯洁心灵的人才能找到入口。多年来，他们一直在寻找一个能够帮助他们对抗即将到来的黑暗力量的人类。</p>
+                
+                <p>故事还在继续，小林在这个奇妙的世界中开始了一段充满冒险、友谊和勇气的旅程...</p>
+            </div>
+        </div>
+        
+    </div>
+    
+    <script>
+        // 切换视图的示例函数
+        function showHome() {
+            document.querySelector('.home-view').style.display = 'block';
+            document.querySelector('.article-view').style.display = 'none';
+            document.querySelector('.search-bar').style.display = 'block'; // 显示搜索框
+        }
+        
+        function showArticle() {
+            document.querySelector('.home-view').style.display = 'none';
+            document.querySelector('.article-view').style.display = 'block';
+            document.querySelector('.search-bar').style.display = 'none'; // 隐藏搜索框
+            // 平滑滚动到顶部
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+        
+        // 初始显示首页
+        showHome();
+        
+        // 添加过滤标签点击事件
+        document.querySelectorAll('.filter-tag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
