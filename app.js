@@ -159,6 +159,7 @@ function refreshHome() {
     currentState.currentPage = 1;
     currentState.searchKeyword = '';
     currentState.hasMoreData = true;
+    currentState.stories = []; // 清空当前故事列表
     
     // 重置浮动搜索框中的搜索输入
     const floatingSearchInput = elements.floatingSearch.querySelector('#searchInput');
@@ -234,8 +235,33 @@ function handleScroll() {
     }
 }
 
+// 检查页面内容是否足够出现滚动条
+function checkIfScrollNeeded() {
+    // 如果正在加载或者没有更多数据，不检查
+    if (currentState.isLoading || !currentState.hasMoreData) {
+        return;
+    }
+    
+    // 获取窗口高度和文档高度
+    const windowHeight = window.innerHeight;
+    const documentHeight = Math.max(
+        document.body.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.clientHeight,
+        document.documentElement.scrollHeight,
+        document.documentElement.offsetHeight
+    );
+    
+    // 如果文档高度不足以产生滚动条，且还有更多数据可加载，则加载更多
+    if (documentHeight <= windowHeight && currentState.hasMoreData) {
+        console.log('内容不足以产生滚动条，加载更多数据...');
+        // 递归加载更多内容，直到出现滚动条或没有更多数据
+        loadMoreStories(() => checkIfScrollNeeded());
+    }
+}
+
 // 加载更多故事
-function loadMoreStories() {
+function loadMoreStories(callback) {
     // 设置加载中状态，防止重复触发
     currentState.isLoading = true;
     
@@ -262,6 +288,11 @@ function loadMoreStories() {
                 card.style.opacity = '1';
                 card.style.transform = 'translateY(0)';
             });
+            
+            // 如果有回调函数，调用它
+            if (typeof callback === 'function') {
+                setTimeout(callback, 300);
+            }
         });
     }, 400);
 }
@@ -324,7 +355,15 @@ function renderCategories() {
     document.querySelectorAll('.filter-tag').forEach(tag => {
         tag.addEventListener('click', () => {
             const categoryId = parseInt(tag.dataset.id);
-            handleCategoryChange(categoryId);
+            
+            // 检查当前是否处于文章详情页
+            if (elements.articleView.style.display !== 'none') {
+                // 如果在文章页面，先返回主页，然后切换分类
+                showHome(true, categoryId);
+            } else {
+                // 在主页直接切换分类
+                handleCategoryChange(categoryId);
+            }
         });
     });
 }
@@ -492,6 +531,14 @@ async function loadStories(append = false) {
             
             // 渲染故事列表
             renderStories(append);
+            
+            // 首次加载或分类切换后，检查是否需要加载更多内容以产生滚动条
+            if (!append) {
+                // 延迟执行检查，确保DOM已经完全渲染
+                setTimeout(() => {
+                    checkIfScrollNeeded();
+                }, 300);
+            }
         } else {
             console.error('加载故事列表失败:', data.msg);
             // 加载失败也标记为没有更多数据，避免一直请求错误
@@ -612,7 +659,8 @@ function handleCategoryChange(categoryId, isRefresh = false) {
     // 更新状态
     currentState.activeCategoryId = categoryId;
     currentState.currentPage = 1;
-    currentState.hasMoreData = true;
+    currentState.hasMoreData = true; // 重置分页状态
+    currentState.stories = []; // 清空当前故事列表
     
     // 添加淡出动画
     const cards = elements.storyGrid.querySelectorAll('.content-card');
@@ -696,7 +744,8 @@ function performSearch(keyword) {
     
     currentState.searchKeyword = keyword;
     currentState.currentPage = 1;
-    currentState.hasMoreData = true;
+    currentState.hasMoreData = true; // 重置分页状态
+    currentState.stories = []; // 清空当前故事列表
     
     // 关闭搜索框
     closeSearchBox();
@@ -723,7 +772,7 @@ function performSearch(keyword) {
 }
 
 // 显示首页
-function showHome() {
+function showHome(fromArticle = false, categoryId = null) {
     // 添加转场动画
     elements.articleView.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
     elements.articleView.style.opacity = '0';
@@ -741,6 +790,11 @@ function showHome() {
             elements.homeView.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
             elements.homeView.style.opacity = '1';
             elements.homeView.style.transform = 'translateY(0)';
+            
+            // 如果是从文章页面返回并且有指定分类ID，切换到该分类
+            if (fromArticle && categoryId !== null) {
+                handleCategoryChange(categoryId);
+            }
         }, 50);
     }, 500);
 }
