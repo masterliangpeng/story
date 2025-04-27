@@ -1443,7 +1443,7 @@ input:focus, select:focus, button:focus {
     flex: 1;
     -ms-overflow-style: none;
     scrollbar-width: none;
-    max-width: 75%;
+    max-width: 80%;
 }
 
 .nav-categories::-webkit-scrollbar {
