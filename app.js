@@ -16,7 +16,7 @@ let currentState = {
     searchKeyword: '',
     isLoading: false,   // 是否正在加载数据
     hasMoreData: true,   // 是否还有更多数据
-    isSimpleMode: false  // 是否为简约模式
+    isSimpleMode: true  // 默认为简约模式
 };
 
 // DOM元素
@@ -1359,15 +1359,17 @@ function toggleViewMode() {
 // 检查并应用存储的视图模式
 function checkSavedViewMode() {
     const savedViewMode = localStorage.getItem(VIEW_MODE_KEY);
-    if (savedViewMode === 'simple') {
-        currentState.isSimpleMode = true;
-        document.body.classList.add('simple-mode');
-        elements.viewModeToggle.innerHTML = '<i class="fas fa-th"></i>';
-        elements.viewModeToggle.title = "切换到图片模式";
-    } else {
+    if (savedViewMode === 'grid') {
+        // 只有明确设置为网格模式时才使用网格模式
         currentState.isSimpleMode = false;
         document.body.classList.remove('simple-mode');
         elements.viewModeToggle.innerHTML = '<i class="fas fa-list"></i>';
         elements.viewModeToggle.title = "切换到简约模式";
+    } else {
+        // 默认使用简约模式或明确设置为简约模式
+        currentState.isSimpleMode = true;
+        document.body.classList.add('simple-mode');
+        elements.viewModeToggle.innerHTML = '<i class="fas fa-th"></i>';
+        elements.viewModeToggle.title = "切换到图片模式";
     }
 }
