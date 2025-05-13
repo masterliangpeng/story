@@ -2,6 +2,9 @@
 const APP_ID = 'nnfnnjshrt2pzvdl';
 const APP_SECRET = 'iq7Wx2HaVBaKiKzOErLeXvWA97iAsMGo';
 const API_BASE_URL = 'https://www.mxnzp.com/api/story';
+const MAX_NAV_CATEGORIES = 10; // 导航栏最多显示的分类数
+const LOCAL_STORAGE_KEY = 'story_categories_setting'; // 本地存储的键名
+const VIEW_MODE_KEY = 'story_view_mode'; // 视图模式存储键名
 
 // 当前状态
 let currentState = {
@@ -9,9 +12,11 @@ let currentState = {
     currentPage: 1,
     stories: [],
     categories: [],
+    selectedCategoryIds: [], // 用户选择的分类ID列表
     searchKeyword: '',
     isLoading: false,   // 是否正在加载数据
-    hasMoreData: true   // 是否还有更多数据
+    hasMoreData: true,   // 是否还有更多数据
+    isSimpleMode: false  // 是否为简约模式
 };
 
 // DOM元素
@@ -30,66 +35,73 @@ const elements = {
     searchBar: document.querySelector('.search-bar'),
     logo: document.querySelector('.logo'),
     themeToggle: document.getElementById('themeToggle'),
+    viewModeToggle: document.getElementById('viewModeToggle'),
     refreshButton: document.getElementById('refreshButton'),
     searchButton: document.getElementById('searchButton'),
     floatingSearch: document.getElementById('floatingSearch'),
     searchClose: document.getElementById('searchClose'),
     searchClear: document.getElementById('searchClear'),
-    searchSubmit: document.getElementById('searchSubmit')
+    searchSubmit: document.getElementById('searchSubmit'),
+    categorySettingsButton: document.getElementById('categorySettingsButton'),
+    categorySettingsModal: document.getElementById('categorySettingsModal'),
+    categorySettingsList: document.getElementById('categorySettingsList'),
+    settingsClose: document.getElementById('settingsClose'),
+    settingsSave: document.getElementById('settingsSave'),
+    settingsReset: document.getElementById('settingsReset')
 };
 
-async function insert(){
-    const stroyDataMap = localStorage.getItem("stroy");
-    const newStroyDataMap = new Map(Object.entries(JSON.parse(stroyDataMap)));
+// async function insert(){
+//     const stroyDataMap = localStorage.getItem("stroy");
+//     const newStroyDataMap = new Map(Object.entries(JSON.parse(stroyDataMap)));
 
-    const dataList = new Array();
-    var index = 0;
-    for (const item of newStroyDataMap.values()) {
-        for (const item2 of item) {
-            let isCompleted = false;
-            while (!isCompleted) {
-                try {
-                    await new Promise(resolve => setTimeout(resolve, 10000)); // 10秒延迟
-                    const url = `${API_BASE_URL}/details?story_id=${item2.storyId}&app_id=${APP_ID}&app_secret=${APP_SECRET}`;
-                    const response = await fetch(url);
-                    const data = await response.json();
-                    if (data.code === 1) {
-                        const story = data.data;
-                        dataList.push({
-                            category_id: 8,
-                            title: item2.title,
-                            category_name: '今典故事',
-                            length: item2.length,
-                            read_time: item2.readTime,
-                            content: story.content
-                        });
-                        index = index + 1;
-                        console.log('content========>'+index, story.content);
-                        isCompleted = true;
-                    }else{
-                        dataList.push({
-                            category_id: 8,
-                            title: item2.title,
-                            category_name: '今典故事',
-                            length: item2.length,
-                            read_time: item2.readTime,
-                            content: ''
-                        });
-                        index = index + 1;
-                        console.log('content========>');
-                        isCompleted = true;
-                    }
-                } catch (error) {
-                    console.error('请求失败，等待重试:', error);
-                    await new Promise(resolve => setTimeout(resolve, 10000)); // 失败后等待5秒再重试
-                }
-            }
-        }
-    }
+//     const dataList = new Array();
+//     var index = 0;
+//     for (const item of newStroyDataMap.values()) {
+//         for (const item2 of item) {
+//             let isCompleted = false;
+//             while (!isCompleted) {
+//                 try {
+//                     await new Promise(resolve => setTimeout(resolve, 10000)); // 10秒延迟
+//                     const url = `${API_BASE_URL}/details?story_id=${item2.storyId}&app_id=${APP_ID}&app_secret=${APP_SECRET}`;
+//                     const response = await fetch(url);
+//                     const data = await response.json();
+//                     if (data.code === 1) {
+//                         const story = data.data;
+//                         dataList.push({
+//                             category_id: 10,
+//                             title: item2.title,
+//                             category_name: '童话故事',
+//                             length: item2.length,
+//                             read_time: item2.readTime,
+//                             content: story.content
+//                         });
+//                         index = index + 1;
+//                         console.log('content========>'+index, story.content);
+//                         isCompleted = true;
+//                     }else{
+//                         dataList.push({
+//                             category_id: 9,
+//                             title: item2.title,
+//                             category_name: '童话故事',
+//                             length: item2.length,
+//                             read_time: item2.readTime,
+//                             content: ''
+//                         });
+//                         index = index + 1;
+//                         console.log('content========>');
+//                         isCompleted = true;
+//                     }
+//                 } catch (error) {
+//                     console.error('请求失败，等待重试:', error);
+//                     await new Promise(resolve => setTimeout(resolve, 10000)); // 失败后等待5秒再重试
+//                 }
+//             }
+//         }
+//     }
 
-    console.log('所有请求完成，结果=========>', dataList);
-    const { data, error } = await window.supabaseClient.insertData('story_main', dataList);
-}
+//     console.log('所有请求完成，结果=========>', dataList);
+//     const { data, error } = await window.supabaseClient.insertData('story_main', dataList);
+// }
 
 // 初始化
 document.addEventListener('DOMContentLoaded', () => {
@@ -114,6 +126,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 主题切换
     elements.themeToggle.addEventListener('click', toggleTheme);
+    
+    // 视图模式切换
+    elements.viewModeToggle.addEventListener('click', toggleViewMode);
 
     // 刷新按钮
     elements.refreshButton.addEventListener('click', refreshHome);
@@ -133,10 +148,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ESC键关闭搜索框
+    // ESC键关闭搜索框和设置弹窗
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-            closeSearchBox();
+            // 检查当前是否有弹窗打开
+            const isSearchOpen = elements.floatingSearch.classList.contains('active');
+            const isSettingsOpen = elements.categorySettingsModal.classList.contains('active');
+            
+            if (isSearchOpen) {
+                closeSearchBox();
+            } else if (isSettingsOpen) {
+                closeCategorySettingsModal();
+            }
         }
     });
 
@@ -171,8 +194,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // 分类设置按钮点击事件
+    elements.categorySettingsButton.addEventListener('click', openCategorySettingsModal);
+    elements.settingsClose.addEventListener('click', closeCategorySettingsModal);
+    elements.settingsSave.addEventListener('click', saveCategorySettings);
+    elements.settingsReset.addEventListener('click', resetCategorySettings);
+
+    // 点击设置弹窗背景关闭弹窗
+    elements.categorySettingsModal.addEventListener('click', (e) => {
+        if (e.target === elements.categorySettingsModal) {
+            closeCategorySettingsModal();
+        }
+    });
+
     // 检查并应用存储的主题
     checkSavedTheme();
+    
+    // 检查并应用存储的视图模式
+    checkSavedViewMode();
 });
 
 // 显示欢迎动画
@@ -224,15 +263,22 @@ function refreshHome() {
     setTimeout(() => {
         // 显示加载中状态并重新加载第一个分类
         if (currentState.categories.length > 0) {
-            handleCategoryChange(currentState.categories[0].type_id, true);
+            // 使用用户已选择的第一个分类，如果没有选择则使用第一个分类
+            const firstSelectedCategory = currentState.selectedCategoryIds.length > 0 
+                ? currentState.categories.find(c => c.id === currentState.selectedCategoryIds[0])
+                : currentState.categories[0];
 
-            // 选中第一个分类标签
-            document.querySelectorAll('.filter-tag').forEach(tag => {
-                tag.classList.remove('active');
-                if (parseInt(tag.dataset.id) === currentState.categories[0].type_id) {
-                    tag.classList.add('active');
-                }
-            });
+            if (firstSelectedCategory) {
+                handleCategoryChange(firstSelectedCategory.id, true);
+
+                // 选中第一个分类标签
+                document.querySelectorAll('.filter-tag').forEach(tag => {
+                    tag.classList.remove('active');
+                    if (parseInt(tag.dataset.id) === firstSelectedCategory.id) {
+                        tag.classList.add('active');
+                    }
+                });
+            }
         }
 
         // 淡入动画
@@ -247,6 +293,14 @@ function refreshHome() {
 // 显示加载遮罩
 function showLoading() {
     elements.loadingOverlay.classList.add('active');
+    
+    // 如果没有其他弹窗打开，则禁止滚动
+    // 避免与已打开的弹窗冲突
+    if (!document.body.classList.contains('modal-open')) {
+        document.body.classList.add('modal-open');
+        // 记录加载前的滚动位置
+        window.loadingScrollY = window.scrollY;
+    }
 }
 
 // 隐藏加载遮罩
@@ -257,6 +311,20 @@ function hideLoading() {
     setTimeout(() => {
         elements.loadingOverlay.classList.remove('active');
         elements.loadingOverlay.classList.remove('fade-out');
+        
+        // 如果没有其他弹窗打开，则恢复滚动
+        // 避免与已打开的弹窗冲突
+        const isSearchOpen = elements.floatingSearch.classList.contains('active');
+        const isSettingsOpen = elements.categorySettingsModal.classList.contains('active');
+        
+        if (!isSearchOpen && !isSettingsOpen) {
+            document.body.classList.remove('modal-open');
+            // 恢复加载前的滚动位置
+            if (window.loadingScrollY !== undefined) {
+                window.scrollTo(0, window.loadingScrollY);
+                window.loadingScrollY = undefined;
+            }
+        }
     }, 400);
 }
 
@@ -358,23 +426,28 @@ async function loadCategories() {
 
     try {
         // 直接调用window.supabaseClient中的方法
-        // const { data, error } = await window.supabaseClient.fetchData('story_category');
-        // if (error) {
-        //     console.error('查询Supabase数据出错:', error);
-        //     return null;
-        // }
+        const { data, error } = await window.supabaseClient.fetchData('story_category');
+        if (error) {
+            console.error('查询Supabase数据出错:', error);
+            return null;
+        }
 
-        // console.log('从Supabase获取的数据:', data1);
+        console.log('从Supabase获取的数据:', data);
 
-        const url = `${API_BASE_URL}/types?app_id=${APP_ID}&app_secret=${APP_SECRET}`;
-        const response = await fetch(url);
-        const data = await response.json();
+        if (data.length > 0) {
+            currentState.categories = data;
 
-        if (data.code === 1 && data.data.length > 0) {
-            currentState.categories = data.data;
+            // 获取用户设置的分类
+            loadUserCategorySettings();
 
-            // 设置默认激活的分类为第一个分类
-            currentState.activeCategoryId = data.data[7].type_id;
+            // 如果用户未选择任何分类或首次使用，使用默认前10个分类
+            if (currentState.selectedCategoryIds.length === 0) {
+                currentState.selectedCategoryIds = data.slice(0, MAX_NAV_CATEGORIES).map(cat => cat.id);
+                saveUserCategorySettings(); // 保存默认设置
+            }
+
+            // 设置默认激活的分类为第一个选择的分类
+            currentState.activeCategoryId = currentState.selectedCategoryIds[0] || data[0].id;
 
             renderCategories();
 
@@ -390,17 +463,43 @@ async function loadCategories() {
     }
 }
 
-// 渲染分类标签
+// 渲染分类标签，只显示用户选择的分类
 function renderCategories() {
     let html = '';
 
-    // 添加API返回的分类，并默认选中第一个
-    currentState.categories.forEach((category, index) => {
-        const isActive = category.type_id === currentState.activeCategoryId;
-        html += `<div class="filter-tag ${isActive ? 'active' : ''}" data-id="${category.type_id}">${category.name}</div>`;
+    // 过滤出用户选择的分类
+    const selectedCategories = currentState.categories.filter(
+        category => currentState.selectedCategoryIds.includes(category.id)
+    );
+
+    // 添加用户选择的分类，并默认选中第一个
+    selectedCategories.forEach((category, index) => {
+        const isActive = category.id === currentState.activeCategoryId;
+        html += `<div class="filter-tag ${isActive ? 'active' : ''}" data-id="${category.id}">${category.name}</div>`;
     });
 
     elements.categoryTags.innerHTML = html;
+
+    // 根据分类数量应用不同的样式类
+    if (selectedCategories.length < MAX_NAV_CATEGORIES) {
+        // 分类不足10个时居中显示
+        elements.categoryTags.classList.add('center-categories');
+        
+        // 对于极少数分类(1-2个)，保留额外间距
+        if (selectedCategories.length <= 2) {
+            elements.categoryTags.classList.add('very-few-categories');
+        } else {
+            elements.categoryTags.classList.remove('very-few-categories');
+        }
+        
+        // 不再使用few-categories类
+        elements.categoryTags.classList.remove('few-categories');
+    } else {
+        // 分类数量为10个时，恢复默认左对齐
+        elements.categoryTags.classList.remove('center-categories');
+        elements.categoryTags.classList.remove('few-categories');
+        elements.categoryTags.classList.remove('very-few-categories');
+    }
 
     // 渐变淡入动画效果
     let tags = document.querySelectorAll('.filter-tag');
@@ -432,7 +531,10 @@ function renderCategories() {
 }
 
 // 渲染故事列表
-function renderStories(append = false) {
+function renderStories(append = false, keepPosition = false) {
+    // 如果要保持当前滚动位置，记录位置
+    const scrollPos = keepPosition ? window.scrollY : 0;
+    
     if (currentState.stories.length === 0 && !append) {
         elements.storyGrid.innerHTML = `
             <div class="no-result">
@@ -460,36 +562,58 @@ function renderStories(append = false) {
     const storiesToRender = currentState.stories.slice(startIndex);
 
     for (const story of storiesToRender) {
-        html += `
-            <div class="content-card" onclick="loadStoryDetail(${story.storyId})">
-                <div class="card-category">${story.type}</div>
-                <div class="card-thumbnail">
-                    <div class="card-placeholder-sketch">
-                        <div class="sketch-animal">
-                            <div class="ears"></div>
-                            <div class="eyes"></div>
-                            <div class="nose"></div>
-                            <div class="mouth"></div>
-                            <div class="whiskers"></div>
-                        </div>
-                        <div class="sketch-text">暂未设置封面，先来读故事吧~</div>
-                    </div>
-                    <div class="account-avatar">
-                        <i class="fas fa-book-reader"></i>
-                    </div>
-                </div>
-                <div class="card-info">
-                    <div class="card-title">${story.title}</div>
-                    <div class="card-meta">
-                        <div class="account-name">${story.type}</div>
-                        <div class="card-stats">
-                            <span><i class="far fa-clock"></i> ${story.readTime}</span>
-                            <span><i class="far fa-file-alt"></i> ${story.length}字</span>
+        if (currentState.isSimpleMode) {
+            // 简约模式卡片
+            html += `
+                <div class="content-card" onclick="loadStoryDetail(${JSON.stringify(story).replace(/\"/g, "'")})">
+                    <div class="read-indicator"></div>
+                    <div class="card-info">
+                        <div class="card-category">${story.category_name}</div>
+                        <div class="card-title">${story.title}</div>
+                        <div class="card-excerpt">${getExcerpt(story.content, 80)}</div>
+                        <div class="card-meta">
+                            <div class="account-name">${story.category_name}</div>
+                            <div class="card-stats">
+                                <span><i class="far fa-clock"></i> ${story.read_time}</span>
+                                <span><i class="far fa-file-alt"></i> ${story.length}字</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        `;
+            `;
+        } else {
+            // 图片模式卡片 (原有样式)
+            html += `
+                <div class="content-card" onclick="loadStoryDetail(${JSON.stringify(story).replace(/\"/g, "'")})">
+                    <div class="card-category">${story.category_name}</div>
+                    <div class="card-thumbnail">
+                        <div class="card-placeholder-sketch">
+                            <div class="sketch-animal">
+                                <div class="ears"></div>
+                                <div class="eyes"></div>
+                                <div class="nose"></div>
+                                <div class="mouth"></div>
+                                <div class="whiskers"></div>
+                            </div>
+                            <div class="sketch-text">暂未设置封面，先来读故事吧~</div>
+                        </div>
+                        <div class="account-avatar">
+                            <i class="fas fa-book-reader"></i>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">${story.title}</div>
+                        <div class="card-meta">
+                            <div class="account-name">${story.category_name}</div>
+                            <div class="card-stats">
+                                <span><i class="far fa-clock"></i> ${story.read_time}</span>
+                                <span><i class="far fa-file-alt"></i> ${story.length}字</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
     }
 
     // 如果是追加模式，则添加到现有内容后面，否则替换
@@ -523,6 +647,13 @@ function renderStories(append = false) {
             }, 50 * index);
         });
     }
+    
+    // 如果需要保持滚动位置，则在动画完成后恢复
+    if (keepPosition) {
+        setTimeout(() => {
+            window.scrollTo(0, scrollPos);
+        }, 50);
+    }
 }
 
 // 显示卡片加载骨架屏
@@ -530,23 +661,58 @@ function showCardSkeletons() {
     const cardCount = window.innerWidth > 768 ? 6 : 4;
     let skeletonHtml = '';
 
-    for (let i = 0; i < cardCount; i++) {
-        skeletonHtml += `
-            <div class="content-card-skeleton">
-                <div class="skeleton-thumbnail"></div>
-                <div class="skeleton-info">
-                    <div class="skeleton-title"></div>
-                    <div class="skeleton-title"></div>
-                    <div class="skeleton-meta">
-                        <div class="skeleton-meta-item"></div>
-                        <div class="skeleton-meta-item"></div>
+    // 根据当前模式显示不同的骨架屏
+    if (currentState.isSimpleMode) {
+        // 简约模式骨架屏
+        for (let i = 0; i < cardCount; i++) {
+            skeletonHtml += `
+                <div class="content-card-skeleton">
+                    <div class="skeleton-info">
+                        <div class="skeleton-title"></div>
+                        <div class="skeleton-title" style="width: 70%;"></div>
+                        <div class="skeleton-meta">
+                            <div class="skeleton-meta-item"></div>
+                            <div class="skeleton-meta-item"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `;
+            `;
+        }
+    } else {
+        // 图片模式骨架屏（原有）
+        for (let i = 0; i < cardCount; i++) {
+            skeletonHtml += `
+                <div class="content-card-skeleton">
+                    <div class="skeleton-thumbnail"></div>
+                    <div class="skeleton-info">
+                        <div class="skeleton-title"></div>
+                        <div class="skeleton-title"></div>
+                        <div class="skeleton-meta">
+                            <div class="skeleton-meta-item"></div>
+                            <div class="skeleton-meta-item"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
     }
 
     elements.storyGrid.innerHTML = skeletonHtml;
+}
+
+// 获取故事内容的摘要
+function getExcerpt(content, maxLength = 80) {
+    if (!content) return '暂无内容预览';
+    
+    // 清理内容，移除多余空格和换行
+    const cleanContent = content.replace(/\s+/g, ' ').trim();
+    
+    // 截取指定长度
+    if (cleanContent.length <= maxLength) {
+        return cleanContent;
+    }
+    
+    return cleanContent.substring(0, maxLength) + '...';
 }
 
 // 加载故事列表
@@ -567,35 +733,41 @@ async function loadStories(append = false) {
 
     try {
         // 添加延迟模拟网络请求
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // await new Promise(resolve => setTimeout(resolve, 1000));
 
-        let url = `${API_BASE_URL}/list?page=${currentState.currentPage}&keyword=${currentState.searchKeyword}&app_id=${APP_ID}&app_secret=${APP_SECRET}`;
+        // let url = `${API_BASE_URL}/list?page=${currentState.currentPage}&keyword=${currentState.searchKeyword}&app_id=${APP_ID}&app_secret=${APP_SECRET}`;
+        
 
+        const options = {
+            orderBy:{column:'id'},
+            pagination:{page:currentState.currentPage,pageSize:20},
+            filter:{},
+            filterLike:{}
+        }
+        
         // 添加分类参数
         if (currentState.activeCategoryId) {
-            url += `&type_id=${currentState.activeCategoryId}`;
+            options.filter = {category_id:currentState.activeCategoryId}
         }
 
-        const response = await fetch(url);
-        const data = await response.json();
+        if(currentState.searchKeyword){
+            options.filterLike = {title:currentState.searchKeyword};
+        }
 
-        if (data.code === 1) {
-            const newStories = data.data;
-            const stroyDataMap = localStorage.getItem("stroy");
-            if(stroyDataMap == null){
-                let dataMap = new Map();
-                let key = currentState.activeCategoryId + "-" + currentState.currentPage;
-                dataMap.set(key,newStories) ;
-                localStorage.setItem("stroy",JSON.stringify(Object.fromEntries(dataMap)));
-            }else{
-                let dataMap = new Map(Object.entries(JSON.parse(stroyDataMap)));
-                let key = currentState.activeCategoryId + "-" + currentState.currentPage;
-                let exits = dataMap.get(key);
-                if(exits == null){
-                    dataMap.set(key,newStories);
-                    localStorage.setItem("stroy",JSON.stringify(Object.fromEntries(dataMap)));
-                }
-            }
+        const { data, error } = await window.supabaseClient.fetchData('story_main',options);
+        if (error) {
+            console.error('查询Supabase数据出错:', error);
+            return null;
+        }
+
+        console.log('从Supabase获取的数据:', data);
+
+
+        //const response = await fetch(url);
+        // const data = await response.json();
+
+        if (data.length > 0) {
+            const newStories = data;
 
             // 判断是否还有更多数据
             currentState.hasMoreData = newStories.length > 0;
@@ -666,22 +838,20 @@ async function loadStories(append = false) {
 }
 
 // 加载故事详情
-async function loadStoryDetail(storyId) {
+async function loadStoryDetail(story) {
+    // 解析JSON字符串为对象
+    // const story = JSON.parse(storyJson);
+    
     // 显示加载遮罩
     showLoading();
 
     try {
-        const url = `${API_BASE_URL}/details?story_id=${storyId}&app_id=${APP_ID}&app_secret=${APP_SECRET}`;
-        const response = await fetch(url);
-        const data = await response.json();
-
-        if (data.code === 1) {
-            const story = data.data;
-
+        let content = story.content;
+        if (content != null || content != '') {
             // 更新故事详情页面
             elements.storyTitle.textContent = story.title;
-            elements.storyType.textContent = story.type;
-            elements.storyReadTime.textContent = `预计阅读时间：${story.readTime}`;
+            elements.storyType.textContent = story.category_name;
+            elements.storyReadTime.textContent = `预计阅读时间：${story.read_time}`;
             elements.storyLength.textContent = story.length;
 
             // 逐段渲染内容，增加动画效果
@@ -709,7 +879,7 @@ async function loadStoryDetail(storyId) {
                 }, 100 * Math.min(index, 5)); // 最多延迟5段，防止过长的故事有太长的加载时间
             });
         } else {
-            console.error('加载故事详情失败:', data.msg);
+            console.error('加载故事详情失败: 内容为空');
         }
     } catch (error) {
         console.error('加载故事详情出错:', error);
@@ -808,6 +978,8 @@ function handleSearchKeydown(event) {
 function performSearch(keyword) {
     // 如果搜索关键词没变，不重新搜索
     if (keyword === currentState.searchKeyword) {
+        // 即使关键词没变，也应该关闭搜索框
+        closeSearchBox();
         return;
     }
 
@@ -825,7 +997,7 @@ function performSearch(keyword) {
     currentState.hasMoreData = true; // 重置分页状态
     currentState.stories = []; // 清空当前故事列表
 
-    // 关闭搜索框
+    // 关闭搜索框 (这会自动恢复滚动状态)
     closeSearchBox();
 
     // 显示加载中状态
@@ -934,6 +1106,12 @@ function checkSavedTheme() {
 // 显示搜索框
 function toggleSearchBox() {
     elements.floatingSearch.classList.add('active');
+    
+    // 禁止背景滚动
+    document.body.classList.add('modal-open');
+    
+    // 记录当前滚动位置
+    window.modalScrollY = window.scrollY;
 
     // 直接获取浮动搜索框中的搜索栏元素，而不是使用外部的 elements.searchBar
     const floatingSearchBar = elements.floatingSearch.querySelector('.search-bar');
@@ -967,6 +1145,14 @@ function toggleSearchBox() {
 // 关闭搜索框
 function closeSearchBox() {
     elements.floatingSearch.classList.remove('active');
+    
+    // 恢复背景滚动
+    document.body.classList.remove('modal-open');
+    
+    // 恢复滚动位置
+    setTimeout(() => {
+        window.scrollTo(0, window.modalScrollY || 0);
+    }, 10);
 
     // 直接获取浮动搜索框中的搜索栏元素
     const floatingSearchBar = elements.floatingSearch.querySelector('.search-bar');
@@ -974,5 +1160,214 @@ function closeSearchBox() {
     // 移除焦点效果类
     if (floatingSearchBar) {
         floatingSearchBar.classList.remove('search-focus');
+    }
+}
+
+// 打开分类设置弹窗
+function openCategorySettingsModal() {
+    populateCategorySettings();
+    elements.categorySettingsModal.classList.add('active');
+    
+    // 禁止背景滚动
+    document.body.classList.add('modal-open');
+    
+    // 记录当前滚动位置
+    window.modalScrollY = window.scrollY;
+}
+
+// 关闭分类设置弹窗
+function closeCategorySettingsModal() {
+    elements.categorySettingsModal.classList.remove('active');
+    
+    // 恢复背景滚动
+    document.body.classList.remove('modal-open');
+    
+    // 恢复滚动位置
+    setTimeout(() => {
+        window.scrollTo(0, window.modalScrollY || 0);
+    }, 10);
+}
+
+// 填充分类设置内容
+function populateCategorySettings() {
+    let html = '';
+    const selectedCount = currentState.selectedCategoryIds.length;
+
+    // 为每个分类创建一个复选框项
+    currentState.categories.forEach(category => {
+        const isChecked = currentState.selectedCategoryIds.includes(category.id);
+        // 如果已经选择了最大数量，且当前项未选中，则禁用该项
+        const isDisabled = selectedCount >= MAX_NAV_CATEGORIES && !isChecked;
+
+        html += `
+            <div class="category-item">
+                <div class="custom-checkbox">
+                    <input type="checkbox" id="category-${category.id}" 
+                        ${isChecked ? 'checked' : ''} 
+                        ${isDisabled ? 'disabled' : ''} 
+                        data-id="${category.id}" 
+                        onchange="handleCategoryCheckboxChange(this)">
+                    <label for="category-${category.id}">${category.name}</label>
+                </div>
+            </div>
+        `;
+    });
+
+    // 添加警告提示，如果接近最大限制
+    html += `
+        <div class="category-limit-warning" id="categoryLimitWarning">
+            <i class="fas fa-exclamation-circle"></i> 
+            最多可选择 ${MAX_NAV_CATEGORIES} 个分类显示在导航栏
+        </div>
+    `;
+
+    elements.categorySettingsList.innerHTML = html;
+
+    // 更新警告显示
+    updateCategoryLimitWarning();
+}
+
+// 处理分类复选框变化
+window.handleCategoryCheckboxChange = function(checkbox) {
+    const categoryId = parseInt(checkbox.dataset.id);
+    const isChecked = checkbox.checked;
+
+    if (isChecked) {
+        // 添加到选中列表
+        if (!currentState.selectedCategoryIds.includes(categoryId)) {
+            currentState.selectedCategoryIds.push(categoryId);
+        }
+    } else {
+        // 从选中列表移除
+        currentState.selectedCategoryIds = currentState.selectedCategoryIds.filter(id => id !== categoryId);
+    }
+
+    // 更新复选框状态
+    updateCheckboxStates();
+
+    // 更新警告显示
+    updateCategoryLimitWarning();
+}
+
+// 更新复选框状态
+function updateCheckboxStates() {
+    const selectedCount = currentState.selectedCategoryIds.length;
+    
+    // 遍历所有复选框
+    document.querySelectorAll('#categorySettingsList input[type="checkbox"]').forEach(checkbox => {
+        const categoryId = parseInt(checkbox.dataset.id);
+        const isChecked = currentState.selectedCategoryIds.includes(categoryId);
+        
+        // 如果已经选择了最大数量，且当前项未选中，则禁用该项
+        if (selectedCount >= MAX_NAV_CATEGORIES && !isChecked) {
+            checkbox.disabled = true;
+        } else {
+            checkbox.disabled = false;
+        }
+    });
+}
+
+// 更新分类限制警告
+function updateCategoryLimitWarning() {
+    const warningElement = document.getElementById('categoryLimitWarning');
+    if (!warningElement) return;
+
+    const selectedCount = currentState.selectedCategoryIds.length;
+    
+    if (selectedCount >= MAX_NAV_CATEGORIES) {
+        warningElement.classList.add('active');
+    } else {
+        warningElement.classList.remove('active');
+    }
+}
+
+// 保存分类设置
+function saveCategorySettings() {
+    // 保存到本地存储
+    saveUserCategorySettings();
+    
+    // 关闭设置弹窗 (这会自动恢复滚动状态)
+    closeCategorySettingsModal();
+    
+    // 重新渲染导航栏分类
+    renderCategories();
+    
+    // 如果当前激活的分类不在选中列表中，切换到第一个选中的分类
+    if (!currentState.selectedCategoryIds.includes(currentState.activeCategoryId) && currentState.selectedCategoryIds.length > 0) {
+        handleCategoryChange(currentState.selectedCategoryIds[0], true);
+    }
+}
+
+// 重置分类设置为默认值
+function resetCategorySettings() {
+    // 默认选择前10个分类
+    currentState.selectedCategoryIds = currentState.categories.slice(0, MAX_NAV_CATEGORIES).map(cat => cat.id);
+    
+    // 更新复选框状态
+    populateCategorySettings();
+}
+
+// 保存用户分类设置到本地存储
+function saveUserCategorySettings() {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(currentState.selectedCategoryIds));
+}
+
+// 从本地存储加载用户分类设置
+function loadUserCategorySettings() {
+    try {
+        const savedSettings = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (savedSettings) {
+            currentState.selectedCategoryIds = JSON.parse(savedSettings);
+            // 验证保存的分类ID是否存在于当前分类列表中
+            currentState.selectedCategoryIds = currentState.selectedCategoryIds.filter(
+                id => currentState.categories.some(cat => cat.id === id)
+            );
+        } else {
+            // 如果没有保存的设置，使用默认值（前10个分类）
+            currentState.selectedCategoryIds = currentState.categories.slice(0, MAX_NAV_CATEGORIES).map(cat => cat.id);
+        }
+    } catch (error) {
+        console.error('加载用户分类设置出错:', error);
+        // 出错时使用默认值
+        currentState.selectedCategoryIds = currentState.categories.slice(0, MAX_NAV_CATEGORIES).map(cat => cat.id);
+    }
+}
+
+// 视图模式切换
+function toggleViewMode() {
+    currentState.isSimpleMode = !currentState.isSimpleMode;
+    
+    if (currentState.isSimpleMode) {
+        document.body.classList.add('simple-mode');
+        elements.viewModeToggle.innerHTML = '<i class="fas fa-th"></i>';
+        elements.viewModeToggle.title = "切换到图片模式";
+    } else {
+        document.body.classList.remove('simple-mode');
+        elements.viewModeToggle.innerHTML = '<i class="fas fa-list"></i>';
+        elements.viewModeToggle.title = "切换到简约模式";
+    }
+    
+    // 保存当前模式到本地存储
+    localStorage.setItem(VIEW_MODE_KEY, currentState.isSimpleMode ? 'simple' : 'grid');
+    
+    // 重新渲染故事列表，以应用新的视图模式
+    if (currentState.stories.length > 0) {
+        renderStories(false, true);
+    }
+}
+
+// 检查并应用存储的视图模式
+function checkSavedViewMode() {
+    const savedViewMode = localStorage.getItem(VIEW_MODE_KEY);
+    if (savedViewMode === 'simple') {
+        currentState.isSimpleMode = true;
+        document.body.classList.add('simple-mode');
+        elements.viewModeToggle.innerHTML = '<i class="fas fa-th"></i>';
+        elements.viewModeToggle.title = "切换到图片模式";
+    } else {
+        currentState.isSimpleMode = false;
+        document.body.classList.remove('simple-mode');
+        elements.viewModeToggle.innerHTML = '<i class="fas fa-list"></i>';
+        elements.viewModeToggle.title = "切换到简约模式";
     }
 }

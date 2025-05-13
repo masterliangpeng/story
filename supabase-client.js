@@ -31,7 +31,7 @@ async function fetchData(tableName, options = {}) {
   try {
 
     //构建查询
-    let query = await supabaseClient
+    let query = supabaseClient
       .from(tableName)
       .select(options.columns || '*');
     
@@ -39,6 +39,13 @@ async function fetchData(tableName, options = {}) {
     if (options.filter) {
       for (const [column, value] of Object.entries(options.filter)) {
         query = query.eq(column, value);
+      }
+    }
+
+     // 添加过滤条件
+     if (options.filterLike) {
+      for (const [column, value] of Object.entries(options.filterLike)) {
+        query = query.like(column, '%' + value + '%');
       }
     }
     
@@ -57,7 +64,7 @@ async function fetchData(tableName, options = {}) {
     }
     
     // 执行查询
-    const { data, error } = query;
+    const { data, error } = await query;
     
     if (error) {
       throw error;
