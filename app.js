@@ -16,7 +16,7 @@ let currentState = {
     searchKeyword: '',
     isLoading: false,   // 是否正在加载数据
     hasMoreData: true,   // 是否还有更多数据
-    isSimpleMode: true  // 默认为简约模式
+    isSimpleMode: false  // 是否为简约模式
 };
 
 // DOM元素
@@ -45,67 +45,11 @@ const elements = {
     categorySettingsButton: document.getElementById('categorySettingsButton'),
     categorySettingsModal: document.getElementById('categorySettingsModal'),
     categorySettingsList: document.getElementById('categorySettingsList'),
-    settingsClose: document.getElementById('settingsClose'),
-    settingsSave: document.getElementById('settingsSave'),
-    settingsReset: document.getElementById('settingsReset')
+    settingsClose: document.getElementById('settingsClose')
 };
-
-// async function insert(){
-//     const stroyDataMap = localStorage.getItem("stroy");
-//     const newStroyDataMap = new Map(Object.entries(JSON.parse(stroyDataMap)));
-
-//     const dataList = new Array();
-//     var index = 0;
-//     for (const item of newStroyDataMap.values()) {
-//         for (const item2 of item) {
-//             let isCompleted = false;
-//             while (!isCompleted) {
-//                 try {
-//                     await new Promise(resolve => setTimeout(resolve, 10000)); // 10秒延迟
-//                     const url = `${API_BASE_URL}/details?story_id=${item2.storyId}&app_id=${APP_ID}&app_secret=${APP_SECRET}`;
-//                     const response = await fetch(url);
-//                     const data = await response.json();
-//                     if (data.code === 1) {
-//                         const story = data.data;
-//                         dataList.push({
-//                             category_id: 10,
-//                             title: item2.title,
-//                             category_name: '童话故事',
-//                             length: item2.length,
-//                             read_time: item2.readTime,
-//                             content: story.content
-//                         });
-//                         index = index + 1;
-//                         console.log('content========>'+index, story.content);
-//                         isCompleted = true;
-//                     }else{
-//                         dataList.push({
-//                             category_id: 9,
-//                             title: item2.title,
-//                             category_name: '童话故事',
-//                             length: item2.length,
-//                             read_time: item2.readTime,
-//                             content: ''
-//                         });
-//                         index = index + 1;
-//                         console.log('content========>');
-//                         isCompleted = true;
-//                     }
-//                 } catch (error) {
-//                     console.error('请求失败，等待重试:', error);
-//                     await new Promise(resolve => setTimeout(resolve, 10000)); // 失败后等待5秒再重试
-//                 }
-//             }
-//         }
-//     }
-
-//     console.log('所有请求完成，结果=========>', dataList);
-//     const { data, error } = await window.supabaseClient.insertData('story_main', dataList);
-// }
 
 // 初始化
 document.addEventListener('DOMContentLoaded', () => {
-    //insert();
     // 显示欢迎动画
     showWelcomeAnimation();
 
@@ -141,10 +85,21 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.floatingSearch.querySelector('#searchClear').addEventListener('click', clearSearchInput);
     elements.floatingSearch.querySelector('#searchSubmit').addEventListener('click', submitSearch);
 
+    // 分类设置按钮点击事件
+    elements.categorySettingsButton.addEventListener('click', openCategorySettingsModal);
+    elements.settingsClose.addEventListener('click', closeCategorySettingsModal);
+
     // 点击遮罩关闭搜索框
     elements.floatingSearch.addEventListener('click', (e) => {
         if (e.target === elements.floatingSearch) {
             closeSearchBox();
+        }
+    });
+
+    // 点击设置弹窗背景关闭弹窗
+    elements.categorySettingsModal.addEventListener('click', (e) => {
+        if (e.target === elements.categorySettingsModal) {
+            closeCategorySettingsModal();
         }
     });
 
@@ -191,19 +146,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             floatingSearchClear.style.visibility = 'visible';
             floatingSearchClear.style.opacity = '0.7';
-        }
-    });
-
-    // 分类设置按钮点击事件
-    elements.categorySettingsButton.addEventListener('click', openCategorySettingsModal);
-    elements.settingsClose.addEventListener('click', closeCategorySettingsModal);
-    elements.settingsSave.addEventListener('click', saveCategorySettings);
-    elements.settingsReset.addEventListener('click', resetCategorySettings);
-
-    // 点击设置弹窗背景关闭弹窗
-    elements.categorySettingsModal.addEventListener('click', (e) => {
-        if (e.target === elements.categorySettingsModal) {
-            closeCategorySettingsModal();
         }
     });
 
@@ -260,6 +202,14 @@ function refreshHome() {
         floatingSearchInput.value = '';
     }
 
+    // 恢复默认分类设置
+    currentState.selectedCategoryIds = currentState.categories.slice(0, MAX_NAV_CATEGORIES).map(cat => cat.id);
+    saveUserCategorySettings();
+    renderCategories();
+    
+    // 显示重置成功提示
+    showToast('已恢复默认设置', 'info');
+
     setTimeout(() => {
         // 显示加载中状态并重新加载第一个分类
         if (currentState.categories.length > 0) {
@@ -283,20 +233,19 @@ function refreshHome() {
 
         // 淡入动画
         setTimeout(() => {
-            elements.storyGrid.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            elements.storyGrid.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
             elements.storyGrid.style.opacity = '1';
             elements.storyGrid.style.transform = 'translateY(0)';
-        }, 300);
-    }, 300);
+        }, 150);
+    }, 150);
 }
 
 // 显示加载遮罩
-function showLoading() {
+function showLoading(isAppend = false) {
     elements.loadingOverlay.classList.add('active');
     
-    // 如果没有其他弹窗打开，则禁止滚动
-    // 避免与已打开的弹窗冲突
-    if (!document.body.classList.contains('modal-open')) {
+    // 如果不是追加模式且没有其他弹窗打开，则禁止滚动并记录位置
+    if (!isAppend && !document.body.classList.contains('modal-open')) {
         document.body.classList.add('modal-open');
         // 记录加载前的滚动位置
         window.loadingScrollY = window.scrollY;
@@ -304,7 +253,7 @@ function showLoading() {
 }
 
 // 隐藏加载遮罩
-function hideLoading() {
+function hideLoading(isAppend = false, scrollPos = 0) {
     // 添加淡出动画效果
     elements.loadingOverlay.classList.add('fade-out');
 
@@ -319,13 +268,18 @@ function hideLoading() {
         
         if (!isSearchOpen && !isSettingsOpen) {
             document.body.classList.remove('modal-open');
-            // 恢复加载前的滚动位置
-            if (window.loadingScrollY !== undefined) {
+            
+            // 如果是追加模式，则维持当前滚动位置
+            if (isAppend) {
+                window.scrollTo(0, scrollPos);
+            } 
+            // 否则恢复加载前的滚动位置
+            else if (window.loadingScrollY !== undefined) {
                 window.scrollTo(0, window.loadingScrollY);
                 window.loadingScrollY = undefined;
             }
         }
-    }, 400);
+    }, 200);
 }
 
 // 监听滚动事件
@@ -376,7 +330,7 @@ function checkIfScrollNeeded() {
 
     // 如果文档高度不足以产生滚动条，且还有更多数据可加载，则加载更多
     if (documentHeight <= windowHeight && currentState.hasMoreData) {
-        console.log('内容不足以产生滚动条，加载更多数据...');
+
         // 递归加载更多内容，直到出现滚动条或没有更多数据
         loadMoreStories(() => checkIfScrollNeeded());
     }
@@ -387,8 +341,8 @@ function loadMoreStories(callback) {
     // 设置加载中状态，防止重复触发
     currentState.isLoading = true;
 
-    // 显示加载遮罩，与搜索加载保持一致
-    showLoading();
+    // 显示加载遮罩，与搜索加载保持一致，但标记为追加模式
+    showLoading(true);
 
     // 增加页码
     currentState.currentPage++;
@@ -396,7 +350,7 @@ function loadMoreStories(callback) {
     // 添加淡出动画，与搜索加载一致
     const existingCards = elements.storyGrid.querySelectorAll('.content-card');
     existingCards.forEach((card, index) => {
-        card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        card.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
         card.style.opacity = '0.7';
         card.style.transform = 'translateY(-5px)';
     });
@@ -406,17 +360,17 @@ function loadMoreStories(callback) {
         loadStories(true).then(() => {
             // 恢复现有卡片的原样式
             existingCards.forEach((card, index) => {
-                card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
                 card.style.opacity = '1';
                 card.style.transform = 'translateY(0)';
             });
 
             // 如果有回调函数，调用它
             if (typeof callback === 'function') {
-                setTimeout(callback, 300);
+                setTimeout(callback, 200);
             }
         });
-    }, 400);
+    }, 200);
 }
 
 // 加载分类
@@ -432,7 +386,7 @@ async function loadCategories() {
             return null;
         }
 
-        console.log('从Supabase获取的数据:', data);
+
 
         if (data.length > 0) {
             currentState.categories = data;
@@ -475,7 +429,12 @@ function renderCategories() {
     // 添加用户选择的分类，并默认选中第一个
     selectedCategories.forEach((category, index) => {
         const isActive = category.id === currentState.activeCategoryId;
-        html += `<div class="filter-tag ${isActive ? 'active' : ''}" data-id="${category.id}">${category.name}</div>`;
+        html += `
+            <div class="filter-tag ${isActive ? 'active' : ''}" data-id="${category.id}">
+                <span class="tag-text">${category.name}</span>
+                <div class="tag-indicator"></div>
+            </div>
+        `;
     });
 
     elements.categoryTags.innerHTML = html;
@@ -513,6 +472,9 @@ function renderCategories() {
         }, 50 * index);
     });
 
+    // 创建一个可滚动的导航条处理
+    makeNavScrollable();
+
     // 绑定分类点击事件
     document.querySelectorAll('.filter-tag').forEach(tag => {
         tag.addEventListener('click', () => {
@@ -528,6 +490,95 @@ function renderCategories() {
             }
         });
     });
+}
+
+// 使导航条可滚动，并添加左右滚动按钮
+function makeNavScrollable() {
+    // 首先检查是否已经存在滚动按钮，如果有则先移除
+    const existingButtons = document.querySelectorAll('.nav-scroll-button');
+    existingButtons.forEach(button => button.remove());
+    
+    // 获取导航容器的宽度和内容总宽度
+    const navContainer = elements.categoryTags;
+    const containerWidth = navContainer.clientWidth;
+    const contentWidth = navContainer.scrollWidth;
+    
+    // 如果内容宽度小于容器宽度，不需要滚动按钮
+    if (contentWidth <= containerWidth) {
+        return;
+    }
+    
+    // 创建左右滚动按钮
+    const leftButton = document.createElement('div');
+    leftButton.className = 'nav-scroll-button nav-scroll-left';
+    leftButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
+    
+    const rightButton = document.createElement('div');
+    rightButton.className = 'nav-scroll-button nav-scroll-right';
+    rightButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
+    
+    // 在导航容器前后添加按钮
+    const headerContainer = document.querySelector('.header-container');
+    if (navContainer.parentNode === headerContainer) {
+        headerContainer.insertBefore(leftButton, navContainer);
+        headerContainer.insertBefore(rightButton, navContainer.nextSibling);
+    }
+    
+    // 初始状态控制 - 检查是否可以向左滚动
+    updateScrollButtons();
+    
+    // 监听导航容器的滚动事件，更新按钮状态
+    navContainer.addEventListener('scroll', updateScrollButtons);
+    
+    // 按钮点击事件
+    leftButton.addEventListener('click', () => {
+        navContainer.scrollBy({ left: -200, behavior: 'smooth' });
+    });
+    
+    rightButton.addEventListener('click', () => {
+        navContainer.scrollBy({ left: 200, behavior: 'smooth' });
+    });
+    
+    // 窗口大小变化时重新检查
+    window.addEventListener('resize', () => {
+        setTimeout(updateScrollButtons, 300);
+    });
+    
+    // 滚动到当前活动分类
+    scrollToActiveCategory();
+    
+    // 更新滚动按钮状态
+    function updateScrollButtons() {
+        // 检查是否可以向左滚动
+        if (navContainer.scrollLeft <= 10) {
+            leftButton.classList.add('disabled');
+        } else {
+            leftButton.classList.remove('disabled');
+        }
+        
+        // 检查是否可以向右滚动
+        if (navContainer.scrollLeft >= navContainer.scrollWidth - navContainer.clientWidth - 10) {
+            rightButton.classList.add('disabled');
+        } else {
+            rightButton.classList.remove('disabled');
+        }
+    }
+    
+    // 滚动到当前活动分类
+    function scrollToActiveCategory() {
+        const activeTag = navContainer.querySelector('.filter-tag.active');
+        if (activeTag) {
+            const tagLeft = activeTag.offsetLeft;
+            const tagWidth = activeTag.offsetWidth;
+            const containerWidth = navContainer.clientWidth;
+            
+            // 滚动到让活动标签居中的位置
+            navContainer.scrollTo({
+                left: tagLeft - (containerWidth / 2) + (tagWidth / 2),
+                behavior: 'smooth'
+            });
+        }
+    }
 }
 
 // 渲染故事列表
@@ -627,10 +678,10 @@ function renderStories(append = false, keepPosition = false) {
             card.style.opacity = '0';
             card.style.transform = 'translateY(20px)';
             setTimeout(() => {
-                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
                 card.style.opacity = '1';
                 card.style.transform = 'translateY(0)';
-            }, 50 * (i - startIndex));
+            }, 30 * (i - startIndex));
         }
     } else {
         elements.storyGrid.innerHTML = html;
@@ -641,10 +692,10 @@ function renderStories(append = false, keepPosition = false) {
             card.style.opacity = '0';
             card.style.transform = 'translateY(20px)';
             setTimeout(() => {
-                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
                 card.style.opacity = '1';
                 card.style.transform = 'translateY(0)';
-            }, 50 * index);
+            }, 30 * index);
         });
     }
     
@@ -652,7 +703,7 @@ function renderStories(append = false, keepPosition = false) {
     if (keepPosition) {
         setTimeout(() => {
             window.scrollTo(0, scrollPos);
-        }, 50);
+        }, 30);
     }
 }
 
@@ -722,6 +773,9 @@ async function loadStories(append = false) {
         return;
     }
 
+    // 记录滚动位置，用于在追加模式下保持
+    const scrollPos = append ? window.scrollY : 0;
+
     // 如果不是被loadMoreStories调用（第一次加载或分类/搜索变更），则设置加载中状态
     if (!append) {
         currentState.isLoading = true;
@@ -732,11 +786,6 @@ async function loadStories(append = false) {
     }
 
     try {
-        // 添加延迟模拟网络请求
-        // await new Promise(resolve => setTimeout(resolve, 1000));
-
-        // let url = `${API_BASE_URL}/list?page=${currentState.currentPage}&keyword=${currentState.searchKeyword}&app_id=${APP_ID}&app_secret=${APP_SECRET}`;
-        
 
         const options = {
             orderBy:{column:'id'},
@@ -760,11 +809,8 @@ async function loadStories(append = false) {
             return null;
         }
 
-        console.log('从Supabase获取的数据:', data);
 
 
-        //const response = await fetch(url);
-        // const data = await response.json();
 
         if (data.length > 0) {
             const newStories = data;
@@ -780,7 +826,7 @@ async function loadStories(append = false) {
             }
 
             // 渲染故事列表
-            renderStories(append);
+            renderStories(append, append);  // 在追加模式下保持滚动位置
 
             // 首次加载或分类切换后，检查是否需要加载更多内容以产生滚动条
             if (!append) {
@@ -833,7 +879,7 @@ async function loadStories(append = false) {
         // 标记为加载完成
         currentState.isLoading = false;
         // 隐藏加载遮罩
-        hideLoading();
+        hideLoading(append, scrollPos);
     }
 }
 
@@ -913,7 +959,7 @@ function handleCategoryChange(categoryId, isRefresh = false) {
     // 添加淡出动画
     const cards = elements.storyGrid.querySelectorAll('.content-card');
     cards.forEach((card, index) => {
-        card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        card.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
         card.style.opacity = '0';
         card.style.transform = 'translateY(-10px)';
     });
@@ -925,7 +971,7 @@ function handleCategoryChange(categoryId, isRefresh = false) {
 
         // 重新加载故事
         loadStories();
-    }, 300);
+    }, 150);
 }
 
 // 监听搜索输入变化，控制清除按钮显示
@@ -1190,34 +1236,73 @@ function closeCategorySettingsModal() {
 
 // 填充分类设置内容
 function populateCategorySettings() {
-    let html = '';
+    // 创建分类设置的视图容器
+    let selectedHTML = '';
+    let unselectedHTML = '';
     const selectedCount = currentState.selectedCategoryIds.length;
 
-    // 为每个分类创建一个复选框项
-    currentState.categories.forEach(category => {
-        const isChecked = currentState.selectedCategoryIds.includes(category.id);
-        // 如果已经选择了最大数量，且当前项未选中，则禁用该项
-        const isDisabled = selectedCount >= MAX_NAV_CATEGORIES && !isChecked;
-
-        html += `
-            <div class="category-item">
-                <div class="custom-checkbox">
-                    <input type="checkbox" id="category-${category.id}" 
-                        ${isChecked ? 'checked' : ''} 
-                        ${isDisabled ? 'disabled' : ''} 
-                        data-id="${category.id}" 
-                        onchange="handleCategoryCheckboxChange(this)">
-                    <label for="category-${category.id}">${category.name}</label>
-                </div>
+    // 分类已选择和未选择的分类
+    const selectedCategories = currentState.categories.filter(cat => currentState.selectedCategoryIds.includes(cat.id));
+    const unselectedCategories = currentState.categories.filter(cat => !currentState.selectedCategoryIds.includes(cat.id));
+    
+    // 为已选择的分类创建UI项
+    selectedCategories.forEach(category => {
+        selectedHTML += `
+            <div class="category-item selected" data-id="${category.id}">
+                <div class="category-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="category-name">${category.name}</div>
+                <button class="category-action-btn remove-btn" onclick="handleCategoryToggle(${category.id}, false)">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
         `;
     });
 
-    // 添加警告提示，如果接近最大限制
-    html += `
-        <div class="category-limit-warning" id="categoryLimitWarning">
-            <i class="fas fa-exclamation-circle"></i> 
-            最多可选择 ${MAX_NAV_CATEGORIES} 个分类显示在导航栏
+    // 为未选择的分类创建UI项
+    unselectedCategories.forEach(category => {
+        // 如果已经选择了最大数量，则禁用该项
+        const isDisabled = selectedCount >= MAX_NAV_CATEGORIES;
+        
+        unselectedHTML += `
+            <div class="category-item ${isDisabled ? 'disabled' : ''}" data-id="${category.id}">
+                <div class="category-icon"><i class="far fa-circle"></i></div>
+                <div class="category-name">${category.name}</div>
+                <button class="category-action-btn add-btn" onclick="handleCategoryToggle(${category.id}, true)" ${isDisabled ? 'disabled' : ''}>
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        `;
+    });
+
+    // 创建完整的设置UI
+    let html = `
+        <div class="category-sections">
+            <div class="category-section">
+                <div class="section-header">
+                    <h4><i class="fas fa-check-square"></i> 已选择的分类 (${selectedCategories.length}/${MAX_NAV_CATEGORIES})</h4>
+                    <span class="section-subtitle">这些分类将显示在导航栏中</span>
+                </div>
+                <div class="category-items selected-items">
+                    ${selectedHTML || '<div class="empty-message">没有选择任何分类，请从下方添加</div>'}
+                </div>
+            </div>
+            
+            <div class="category-divider"></div>
+            
+            <div class="category-section">
+                <div class="section-header">
+                    <h4><i class="fas fa-list"></i> 可用分类 (${unselectedCategories.length})</h4>
+                    <span class="section-subtitle">点击添加按钮将分类添加到导航栏</span>
+                </div>
+                <div class="category-items unselected-items">
+                    ${unselectedHTML || '<div class="empty-message">没有更多可选择的分类</div>'}
+                </div>
+            </div>
+        </div>
+        
+        <div class="category-limit-info ${selectedCount >= MAX_NAV_CATEGORIES ? 'warning' : ''}">
+            <i class="${selectedCount >= MAX_NAV_CATEGORIES ? 'fas fa-exclamation-circle' : 'fas fa-info-circle'}"></i> 
+            <span>导航栏最多可显示 ${MAX_NAV_CATEGORIES} 个分类 (当前已选择 ${selectedCount} 个)</span>
         </div>
     `;
 
@@ -1227,44 +1312,63 @@ function populateCategorySettings() {
     updateCategoryLimitWarning();
 }
 
-// 处理分类复选框变化
-window.handleCategoryCheckboxChange = function(checkbox) {
-    const categoryId = parseInt(checkbox.dataset.id);
-    const isChecked = checkbox.checked;
-
-    if (isChecked) {
+// 处理分类切换
+window.handleCategoryToggle = function(categoryId, isAdd) {
+    if (isAdd) {
+        // 检查是否已达到最大限制
+        if (currentState.selectedCategoryIds.length >= MAX_NAV_CATEGORIES) {
+            // 显示最大限制警告
+            const limitInfo = document.querySelector('.category-limit-info');
+            if (limitInfo) {
+                limitInfo.classList.add('shake-animation');
+                setTimeout(() => {
+                    limitInfo.classList.remove('shake-animation');
+                }, 820);
+            }
+            return;
+        }
+        
         // 添加到选中列表
         if (!currentState.selectedCategoryIds.includes(categoryId)) {
             currentState.selectedCategoryIds.push(categoryId);
         }
     } else {
+        // 检查是否只剩下最后一个分类
+        if (currentState.selectedCategoryIds.length <= 1) {
+            // 显示至少需要一个分类的警告
+            showToast('至少需要选择一个分类', 'warning');
+            
+            // 高亮显示当前元素提示不能移除
+            const categoryItem = document.querySelector(`.category-item[data-id="${categoryId}"]`);
+            if (categoryItem) {
+                categoryItem.classList.add('shake-animation');
+                setTimeout(() => {
+                    categoryItem.classList.remove('shake-animation');
+                }, 820);
+            }
+            return;
+        }
+        
         // 从选中列表移除
         currentState.selectedCategoryIds = currentState.selectedCategoryIds.filter(id => id !== categoryId);
     }
-
-    // 更新复选框状态
-    updateCheckboxStates();
-
-    // 更新警告显示
-    updateCategoryLimitWarning();
-}
-
-// 更新复选框状态
-function updateCheckboxStates() {
-    const selectedCount = currentState.selectedCategoryIds.length;
     
-    // 遍历所有复选框
-    document.querySelectorAll('#categorySettingsList input[type="checkbox"]').forEach(checkbox => {
-        const categoryId = parseInt(checkbox.dataset.id);
-        const isChecked = currentState.selectedCategoryIds.includes(categoryId);
-        
-        // 如果已经选择了最大数量，且当前项未选中，则禁用该项
-        if (selectedCount >= MAX_NAV_CATEGORIES && !isChecked) {
-            checkbox.disabled = true;
-        } else {
-            checkbox.disabled = false;
-        }
-    });
+    // 立即保存用户设置
+    saveUserCategorySettings();
+    
+    // 重新渲染设置项
+    populateCategorySettings();
+    
+    // 重新渲染导航栏分类
+    renderCategories();
+    
+    // 如果当前激活的分类不在选中列表中，切换到第一个选中的分类
+    if (!currentState.selectedCategoryIds.includes(currentState.activeCategoryId) && currentState.selectedCategoryIds.length > 0) {
+        handleCategoryChange(currentState.selectedCategoryIds[0], true);
+    }
+    
+    // 显示提示信息
+    showToast('分类设置已更新', 'info');
 }
 
 // 更新分类限制警告
@@ -1281,30 +1385,44 @@ function updateCategoryLimitWarning() {
     }
 }
 
-// 保存分类设置
-function saveCategorySettings() {
-    // 保存到本地存储
-    saveUserCategorySettings();
-    
-    // 关闭设置弹窗 (这会自动恢复滚动状态)
-    closeCategorySettingsModal();
-    
-    // 重新渲染导航栏分类
-    renderCategories();
-    
-    // 如果当前激活的分类不在选中列表中，切换到第一个选中的分类
-    if (!currentState.selectedCategoryIds.includes(currentState.activeCategoryId) && currentState.selectedCategoryIds.length > 0) {
-        handleCategoryChange(currentState.selectedCategoryIds[0], true);
+// 显示轻提示 (Toast)
+function showToast(message, type = 'success') {
+    // 检查是否已存在toast元素，如果存在则移除
+    const existingToast = document.querySelector('.toast-message');
+    if (existingToast) {
+        existingToast.remove();
     }
-}
-
-// 重置分类设置为默认值
-function resetCategorySettings() {
-    // 默认选择前10个分类
-    currentState.selectedCategoryIds = currentState.categories.slice(0, MAX_NAV_CATEGORIES).map(cat => cat.id);
     
-    // 更新复选框状态
-    populateCategorySettings();
+    // 创建新的toast元素
+    const toast = document.createElement('div');
+    toast.className = `toast-message ${type}`;
+    
+    // 设置图标
+    let icon = 'check-circle';
+    if (type === 'error') icon = 'times-circle';
+    if (type === 'info') icon = 'info-circle';
+    if (type === 'warning') icon = 'exclamation-circle';
+    
+    toast.innerHTML = `
+        <i class="fas fa-${icon}"></i>
+        <span>${message}</span>
+    `;
+    
+    // 添加到页面
+    document.body.appendChild(toast);
+    
+    // 显示动画
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 10);
+    
+    // 自动消失
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    }, 3000);
 }
 
 // 保存用户分类设置到本地存储
@@ -1359,14 +1477,15 @@ function toggleViewMode() {
 // 检查并应用存储的视图模式
 function checkSavedViewMode() {
     const savedViewMode = localStorage.getItem(VIEW_MODE_KEY);
+    // 如果用户之前设置过具体的视图模式，使用已保存的设置
+    // 如果没有保存的设置，默认使用简约模式
     if (savedViewMode === 'grid') {
-        // 只有明确设置为网格模式时才使用网格模式
         currentState.isSimpleMode = false;
         document.body.classList.remove('simple-mode');
         elements.viewModeToggle.innerHTML = '<i class="fas fa-list"></i>';
         elements.viewModeToggle.title = "切换到简约模式";
     } else {
-        // 默认使用简约模式或明确设置为简约模式
+        // 默认使用简约模式 (savedViewMode === 'simple' 或者 null/undefined)
         currentState.isSimpleMode = true;
         document.body.classList.add('simple-mode');
         elements.viewModeToggle.innerHTML = '<i class="fas fa-th"></i>';
