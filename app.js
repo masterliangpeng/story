@@ -48,6 +48,8 @@ const elements = {
     settingsClose: document.getElementById('settingsClose')
 };
 
+
+
 // 初始化
 document.addEventListener('DOMContentLoaded', () => {
     // 显示欢迎动画
@@ -330,7 +332,7 @@ function checkIfScrollNeeded() {
 
     // 如果文档高度不足以产生滚动条，且还有更多数据可加载，则加载更多
     if (documentHeight <= windowHeight && currentState.hasMoreData) {
-
+        console.log('内容不足以产生滚动条，加载更多数据...');
         // 递归加载更多内容，直到出现滚动条或没有更多数据
         loadMoreStories(() => checkIfScrollNeeded());
     }
@@ -386,7 +388,7 @@ async function loadCategories() {
             return null;
         }
 
-
+        console.log('从Supabase获取的数据:', data);
 
         if (data.length > 0) {
             currentState.categories = data;
@@ -809,7 +811,7 @@ async function loadStories(append = false) {
             return null;
         }
 
-
+        //console.log('从Supabase获取的数据:', data);
 
 
         if (data.length > 0) {

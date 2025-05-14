@@ -2112,9 +2112,50 @@ input:focus, select:focus, button:focus {
     border-color: rgba(244, 67, 54, 0.1);
 }
 
+.settings-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    margin-top: auto;
+}
 
+.settings-save, .settings-reset {
+    padding: 12px 20px;
+    border-radius: var(--button-radius);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
 
+.settings-save {
+    background-color: var(--background-color);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
 
+.settings-save:hover {
+    background-color: var(--surface-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.settings-reset {
+    background-color: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.settings-reset:hover {
+    background-color: var(--background-color);
+    transform: translateY(-2px);
+}
+
+.settings-save:active, .settings-reset:active {
+    transform: translateY(0);
+}
 
 /* 最大限制警告动画 */
 @keyframes shake {
@@ -2188,7 +2229,70 @@ input:focus, select:focus, button:focus {
     animation: fadeIn 0.3s ease forwards;
 }
 
+/* 添加自定义复选框样式 */
+.custom-checkbox {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
 
+.custom-checkbox input[type="checkbox"] {
+    opacity: 0;
+    position: absolute;
+}
+
+.custom-checkbox label {
+    padding-left: 30px;
+    cursor: pointer;
+    font-size: 15px;
+    color: var(--text-primary);
+    position: relative;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+.custom-checkbox label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--surface-color);
+    transition: all 0.2s ease;
+}
+
+.custom-checkbox input[type="checkbox"]:checked + label:before {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.custom-checkbox input[type="checkbox"]:checked + label:after {
+    content: '\f00c';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    left: 3px;
+    top: 0;
+    color: var(--text-on-primary);
+    font-size: 12px;
+}
+
+.custom-checkbox input[type="checkbox"]:disabled + label {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.custom-checkbox input[type="checkbox"]:disabled + label:before {
+    background-color: var(--border-color);
+    border-color: var(--border-color);
+}
 
 /* 禁止页面滚动的样式 */
 body.modal-open {
