@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 主题切换
     elements.themeToggle.addEventListener('click', toggleTheme);
-    
+
     // 视图模式切换
     elements.viewModeToggle.addEventListener('click', toggleViewMode);
 
@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const isSearchOpen = elements.floatingSearch.classList.contains('active');
             const isSettingsOpen = elements.categorySettingsModal.classList.contains('active');
             const isDropdownOpen = sidebarElements.multiFunctionButton.classList.contains('active');
-            
+
             if (isSearchOpen) {
                 closeSearchBox();
             } else if (isSettingsOpen) {
@@ -161,10 +161,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 检查并应用存储的主题
     checkSavedTheme();
-    
+
     // 检查并应用存储的视图模式
     checkSavedViewMode();
-    
+
     // 侧边栏控制
     initSidebar();
 });
@@ -173,25 +173,25 @@ document.addEventListener('DOMContentLoaded', () => {
 function initSidebar() {
     // 侧边栏收起按钮
     sidebarElements.sidebarClose.addEventListener('click', toggleSidebar);
-    
+
     // 侧边栏展开按钮（在collapsed状态显示）
     sidebarElements.sidebarToggle.addEventListener('click', toggleSidebar);
-    
+
     // 创建侧边栏遮罩层元素
     const sidebarOverlay = document.createElement('div');
     sidebarOverlay.className = 'sidebar-overlay';
     document.body.appendChild(sidebarOverlay);
-    
+
     // 点击遮罩关闭侧边栏（移动设备）
     sidebarOverlay.addEventListener('click', () => {
         if (window.innerWidth <= 768) {
             document.body.classList.remove('sidebar-mobile-open');
         }
     });
-    
+
     // 多功能按钮点击事件
     sidebarElements.multiFunctionButton.addEventListener('click', toggleFunctionDropdown);
-    
+
     // 点击其他区域关闭下拉菜单
     document.addEventListener('click', (e) => {
         // 如果点击的不是多功能按钮内的元素，则关闭下拉菜单
@@ -200,22 +200,22 @@ function initSidebar() {
             toggleFunctionDropdown();
         }
     });
-    
+
     // 从功能下拉菜单中移动原有功能按钮的事件监听
     document.getElementById('viewModeToggle').addEventListener('click', toggleViewMode);
     document.getElementById('categorySettingsButton').addEventListener('click', openCategorySettingsModal);
     document.getElementById('themeToggle').addEventListener('click', toggleTheme);
     document.getElementById('refreshButton').addEventListener('click', refreshHome);
-    
+
     // 响应式处理
     handleResponsiveSidebar();
     window.addEventListener('resize', handleResponsiveSidebar);
-    
+
     // 检查本地存储中的侧边栏状态
     const isSidebarCollapsed = localStorage.getItem('sidebar_collapsed') === 'true';
     if (isSidebarCollapsed && window.innerWidth > 768) {
         document.body.classList.add('sidebar-collapsed');
-        
+
         // 设置切换按钮初始状态
         const toggleIcon = sidebarElements.sidebarToggle.querySelector('i');
         if (toggleIcon) {
@@ -235,11 +235,11 @@ function toggleSidebar() {
     // 移动设备上
     if (window.innerWidth <= 768) {
         document.body.classList.toggle('sidebar-mobile-open');
-    } 
+    }
     // 桌面设备上
     else {
         document.body.classList.toggle('sidebar-collapsed');
-        
+
         // 箭头方向动画
         const toggleIcon = sidebarElements.sidebarToggle.querySelector('i');
         if (document.body.classList.contains('sidebar-collapsed')) {
@@ -247,7 +247,7 @@ function toggleSidebar() {
         } else {
             toggleIcon.style.transform = 'rotate(180deg)';
         }
-        
+
         // 存储侧边栏状态
         localStorage.setItem('sidebar_collapsed', document.body.classList.contains('sidebar-collapsed'));
     }
@@ -267,7 +267,7 @@ function handleResponsiveSidebar() {
         if (localStorage.getItem('sidebar_mobile_open') === 'true') {
             document.body.classList.add('sidebar-mobile-open');
         }
-    } 
+    }
     // 桌面设备上
     else {
         document.body.classList.remove('sidebar-mobile-open');
@@ -328,7 +328,7 @@ function refreshHome() {
     currentState.selectedCategoryIds = currentState.categories.slice(0, MAX_NAV_CATEGORIES).map(cat => cat.id);
     saveUserCategorySettings();
     renderCategories();
-    
+
     // 显示重置成功提示
     showToast('已恢复默认设置', 'info');
 
@@ -336,7 +336,7 @@ function refreshHome() {
         // 显示加载中状态并重新加载第一个分类
         if (currentState.categories.length > 0) {
             // 使用用户已选择的第一个分类，如果没有选择则使用第一个分类
-            const firstSelectedCategory = currentState.selectedCategoryIds.length > 0 
+            const firstSelectedCategory = currentState.selectedCategoryIds.length > 0
                 ? currentState.categories.find(c => c.id === currentState.selectedCategoryIds[0])
                 : currentState.categories[0];
 
@@ -365,7 +365,7 @@ function refreshHome() {
 // 显示加载遮罩
 function showLoading(isAppend = false) {
     elements.loadingOverlay.classList.add('active');
-    
+
     // 如果不是追加模式且没有其他弹窗打开，则禁止滚动并记录位置
     if (!isAppend && !document.body.classList.contains('modal-open')) {
         document.body.classList.add('modal-open');
@@ -382,19 +382,19 @@ function hideLoading(isAppend = false, scrollPos = 0) {
     setTimeout(() => {
         elements.loadingOverlay.classList.remove('active');
         elements.loadingOverlay.classList.remove('fade-out');
-        
+
         // 如果没有其他弹窗打开，则恢复滚动
         // 避免与已打开的弹窗冲突
         const isSearchOpen = elements.floatingSearch.classList.contains('active');
         const isSettingsOpen = elements.categorySettingsModal.classList.contains('active');
-        
+
         if (!isSearchOpen && !isSettingsOpen) {
             document.body.classList.remove('modal-open');
-            
+
             // 如果是追加模式，则维持当前滚动位置
             if (isAppend) {
                 window.scrollTo(0, scrollPos);
-            } 
+            }
             // 否则恢复加载前的滚动位置
             else if (window.loadingScrollY !== undefined) {
                 window.scrollTo(0, window.loadingScrollY);
@@ -452,7 +452,7 @@ function checkIfScrollNeeded() {
 
     // 如果文档高度不足以产生滚动条，且还有更多数据可加载，则加载更多
     if (documentHeight <= windowHeight && currentState.hasMoreData) {
-        console.log('内容不足以产生滚动条，加载更多数据...');
+        // console.log('内容不足以产生滚动条，加载更多数据...');
         // 递归加载更多内容，直到出现滚动条或没有更多数据
         loadMoreStories(() => checkIfScrollNeeded());
     }
@@ -592,7 +592,7 @@ function renderCategories() {
                 // 在主页直接切换分类
                 handleCategoryChange(categoryId);
             }
-            
+
             // 在移动设备上，点击分类后自动收起侧边栏
             if (window.innerWidth <= 768) {
                 document.body.classList.remove('sidebar-mobile-open');
@@ -618,7 +618,7 @@ function makeNavScrollable() {
 function renderStories(append = false, keepPosition = false) {
     // 如果要保持当前滚动位置，记录位置
     const scrollPos = keepPosition ? window.scrollY : 0;
-    
+
     if (currentState.stories.length === 0 && !append) {
         elements.storyGrid.innerHTML = `
             <div class="no-result">
@@ -732,7 +732,7 @@ function renderStories(append = false, keepPosition = false) {
             }, 30 * index);
         });
     }
-    
+
     // 如果需要保持滚动位置，则在动画完成后恢复
     if (keepPosition) {
         setTimeout(() => {
@@ -788,15 +788,15 @@ function showCardSkeletons() {
 // 获取故事内容的摘要
 function getExcerpt(content, maxLength = 80) {
     if (!content) return '暂无内容预览';
-    
+
     // 清理内容，移除多余空格和换行
     const cleanContent = content.replace(/\s+/g, ' ').trim();
-    
+
     // 截取指定长度
     if (cleanContent.length <= maxLength) {
         return cleanContent;
     }
-    
+
     return cleanContent.substring(0, maxLength) + '...';
 }
 
@@ -827,7 +827,7 @@ async function loadStories(append = false) {
             filter:{},
             filterLike:{}
         }
-        
+
         // 添加分类参数
         if (currentState.activeCategoryId) {
             options.filter = {category_id:currentState.activeCategoryId}
@@ -921,7 +921,7 @@ async function loadStories(append = false) {
 async function loadStoryDetail(story) {
     // 解析JSON字符串为对象
     // const story = JSON.parse(storyJson);
-    
+
     // 显示加载遮罩
     showLoading();
 
@@ -1186,10 +1186,10 @@ function checkSavedTheme() {
 // 显示搜索框
 function toggleSearchBox() {
     elements.floatingSearch.classList.add('active');
-    
+
     // 禁止背景滚动
     document.body.classList.add('modal-open');
-    
+
     // 记录当前滚动位置
     window.modalScrollY = window.scrollY;
 
@@ -1225,10 +1225,10 @@ function toggleSearchBox() {
 // 关闭搜索框
 function closeSearchBox() {
     elements.floatingSearch.classList.remove('active');
-    
+
     // 恢复背景滚动
     document.body.classList.remove('modal-open');
-    
+
     // 恢复滚动位置
     setTimeout(() => {
         window.scrollTo(0, window.modalScrollY || 0);
@@ -1247,10 +1247,10 @@ function closeSearchBox() {
 function openCategorySettingsModal() {
     populateCategorySettings();
     elements.categorySettingsModal.classList.add('active');
-    
+
     // 禁止背景滚动
     document.body.classList.add('modal-open');
-    
+
     // 记录当前滚动位置
     window.modalScrollY = window.scrollY;
 }
@@ -1258,10 +1258,10 @@ function openCategorySettingsModal() {
 // 关闭分类设置弹窗
 function closeCategorySettingsModal() {
     elements.categorySettingsModal.classList.remove('active');
-    
+
     // 恢复背景滚动
     document.body.classList.remove('modal-open');
-    
+
     // 恢复滚动位置
     setTimeout(() => {
         window.scrollTo(0, window.modalScrollY || 0);
@@ -1278,7 +1278,7 @@ function populateCategorySettings() {
     // 分类已选择和未选择的分类
     const selectedCategories = currentState.categories.filter(cat => currentState.selectedCategoryIds.includes(cat.id));
     const unselectedCategories = currentState.categories.filter(cat => !currentState.selectedCategoryIds.includes(cat.id));
-    
+
     // 为已选择的分类创建UI项
     selectedCategories.forEach(category => {
         selectedHTML += `
@@ -1296,7 +1296,7 @@ function populateCategorySettings() {
     unselectedCategories.forEach(category => {
         // 如果已经选择了最大数量，则禁用该项
         const isDisabled = selectedCount >= MAX_NAV_CATEGORIES;
-        
+
         unselectedHTML += `
             <div class="category-item ${isDisabled ? 'disabled' : ''}" data-id="${category.id}">
                 <div class="category-icon"><i class="far fa-circle"></i></div>
@@ -1361,7 +1361,7 @@ window.handleCategoryToggle = function(categoryId, isAdd) {
             }
             return;
         }
-        
+
         // 添加到选中列表
         if (!currentState.selectedCategoryIds.includes(categoryId)) {
             currentState.selectedCategoryIds.push(categoryId);
@@ -1371,7 +1371,7 @@ window.handleCategoryToggle = function(categoryId, isAdd) {
         if (currentState.selectedCategoryIds.length <= 1) {
             // 显示至少需要一个分类的警告
             showToast('至少需要选择一个分类', 'warning');
-            
+
             // 高亮显示当前元素提示不能移除
             const categoryItem = document.querySelector(`.category-item[data-id="${categoryId}"]`);
             if (categoryItem) {
@@ -1382,25 +1382,25 @@ window.handleCategoryToggle = function(categoryId, isAdd) {
             }
             return;
         }
-        
+
         // 从选中列表移除
         currentState.selectedCategoryIds = currentState.selectedCategoryIds.filter(id => id !== categoryId);
     }
-    
+
     // 立即保存用户设置
     saveUserCategorySettings();
-    
+
     // 重新渲染设置项
     populateCategorySettings();
-    
+
     // 重新渲染导航栏分类
     renderCategories();
-    
+
     // 如果当前激活的分类不在选中列表中，切换到第一个选中的分类
     if (!currentState.selectedCategoryIds.includes(currentState.activeCategoryId) && currentState.selectedCategoryIds.length > 0) {
         handleCategoryChange(currentState.selectedCategoryIds[0], true);
     }
-    
+
     // 显示提示信息
     showToast('分类设置已更新', 'info');
 }
@@ -1411,7 +1411,7 @@ function updateCategoryLimitWarning() {
     if (!warningElement) return;
 
     const selectedCount = currentState.selectedCategoryIds.length;
-    
+
     if (selectedCount >= MAX_NAV_CATEGORIES) {
         warningElement.classList.add('active');
     } else {
@@ -1426,30 +1426,30 @@ function showToast(message, type = 'success') {
     if (existingToast) {
         existingToast.remove();
     }
-    
+
     // 创建新的toast元素
     const toast = document.createElement('div');
     toast.className = `toast-message ${type}`;
-    
+
     // 设置图标
     let icon = 'check-circle';
     if (type === 'error') icon = 'times-circle';
     if (type === 'info') icon = 'info-circle';
     if (type === 'warning') icon = 'exclamation-circle';
-    
+
     toast.innerHTML = `
         <i class="fas fa-${icon}"></i>
         <span>${message}</span>
     `;
-    
+
     // 添加到页面
     document.body.appendChild(toast);
-    
+
     // 显示动画
     setTimeout(() => {
         toast.classList.add('show');
     }, 10);
-    
+
     // 自动消失
     setTimeout(() => {
         toast.classList.remove('show');
@@ -1488,7 +1488,7 @@ function loadUserCategorySettings() {
 // 视图模式切换
 function toggleViewMode() {
     currentState.isSimpleMode = !currentState.isSimpleMode;
-    
+
     if (currentState.isSimpleMode) {
         document.body.classList.add('simple-mode');
         elements.viewModeToggle.innerHTML = '<i class="fas fa-th"></i><span>切换视图</span>';
@@ -1498,10 +1498,10 @@ function toggleViewMode() {
         elements.viewModeToggle.innerHTML = '<i class="fas fa-list"></i><span>切换视图</span>';
         elements.viewModeToggle.title = "切换到简约模式";
     }
-    
+
     // 保存当前模式到本地存储
     localStorage.setItem(VIEW_MODE_KEY, currentState.isSimpleMode ? 'simple' : 'grid');
-    
+
     // 重新渲染故事列表，以应用新的视图模式
     if (currentState.stories.length > 0) {
         renderStories(false, true);
