@@ -1,7 +1,4 @@
 // 常量定义
-const APP_ID = 'nnfnnjshrt2pzvdl';
-const APP_SECRET = 'iq7Wx2HaVBaKiKzOErLeXvWA97iAsMGo';
-const API_BASE_URL = 'https://www.mxnzp.com/api/story';
 const MAX_NAV_CATEGORIES = 10; // 导航栏最多显示的分类数
 const LOCAL_STORAGE_KEY = 'story_categories_setting'; // 本地存储的键名
 const VIEW_MODE_KEY = 'story_view_mode'; // 视图模式存储键名
@@ -28,7 +25,7 @@ const elements = {
     storyTitle: document.getElementById('storyTitle'),
     storyType: document.getElementById('storyType'),
     storyReadTime: document.getElementById('storyReadTime'),
-    storyLength: document.getElementById('storyLength'),
+    // storyLength: document.getElementById('storyLength'),
     storyContent: document.getElementById('storyContent'),
     homeView: document.querySelector('.home-view'),
     articleView: document.querySelector('.article-view'),
@@ -48,7 +45,15 @@ const elements = {
     settingsClose: document.getElementById('settingsClose')
 };
 
-
+// 添加侧边栏的DOM元素
+const sidebarElements = {
+    sidebar: document.getElementById('sidebar'),
+    sidebarToggle: document.getElementById('sidebarToggle'),
+    sidebarClose: document.getElementById('sidebarClose'),
+    multiFunctionButton: document.getElementById('multiFunctionButton'),
+    functionDropdown: document.getElementById('functionDropdown'),
+    mainContainer: document.getElementById('mainContainer')
+};
 
 // 初始化
 document.addEventListener('DOMContentLoaded', () => {
@@ -111,11 +116,14 @@ document.addEventListener('DOMContentLoaded', () => {
             // 检查当前是否有弹窗打开
             const isSearchOpen = elements.floatingSearch.classList.contains('active');
             const isSettingsOpen = elements.categorySettingsModal.classList.contains('active');
+            const isDropdownOpen = sidebarElements.multiFunctionButton.classList.contains('active');
             
             if (isSearchOpen) {
                 closeSearchBox();
             } else if (isSettingsOpen) {
                 closeCategorySettingsModal();
+            } else if (isDropdownOpen) {
+                toggleFunctionDropdown();
             }
         }
     });
@@ -156,7 +164,119 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 检查并应用存储的视图模式
     checkSavedViewMode();
+    
+    // 侧边栏控制
+    initSidebar();
 });
+
+// 初始化侧边栏
+function initSidebar() {
+    // 侧边栏收起按钮
+    sidebarElements.sidebarClose.addEventListener('click', toggleSidebar);
+    
+    // 侧边栏展开按钮（在collapsed状态显示）
+    sidebarElements.sidebarToggle.addEventListener('click', toggleSidebar);
+    
+    // 创建侧边栏遮罩层元素
+    const sidebarOverlay = document.createElement('div');
+    sidebarOverlay.className = 'sidebar-overlay';
+    document.body.appendChild(sidebarOverlay);
+    
+    // 点击遮罩关闭侧边栏（移动设备）
+    sidebarOverlay.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+            document.body.classList.remove('sidebar-mobile-open');
+        }
+    });
+    
+    // 多功能按钮点击事件
+    sidebarElements.multiFunctionButton.addEventListener('click', toggleFunctionDropdown);
+    
+    // 点击其他区域关闭下拉菜单
+    document.addEventListener('click', (e) => {
+        // 如果点击的不是多功能按钮内的元素，则关闭下拉菜单
+        const isClickInsideButton = sidebarElements.multiFunctionButton.contains(e.target);
+        if (!isClickInsideButton && sidebarElements.multiFunctionButton.classList.contains('active')) {
+            toggleFunctionDropdown();
+        }
+    });
+    
+    // 从功能下拉菜单中移动原有功能按钮的事件监听
+    document.getElementById('viewModeToggle').addEventListener('click', toggleViewMode);
+    document.getElementById('categorySettingsButton').addEventListener('click', openCategorySettingsModal);
+    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+    document.getElementById('refreshButton').addEventListener('click', refreshHome);
+    
+    // 响应式处理
+    handleResponsiveSidebar();
+    window.addEventListener('resize', handleResponsiveSidebar);
+    
+    // 检查本地存储中的侧边栏状态
+    const isSidebarCollapsed = localStorage.getItem('sidebar_collapsed') === 'true';
+    if (isSidebarCollapsed && window.innerWidth > 768) {
+        document.body.classList.add('sidebar-collapsed');
+        
+        // 设置切换按钮初始状态
+        const toggleIcon = sidebarElements.sidebarToggle.querySelector('i');
+        if (toggleIcon) {
+            toggleIcon.style.transform = 'rotate(0)';
+        }
+    } else if (window.innerWidth > 768) {
+        // 默认展开状态
+        const toggleIcon = sidebarElements.sidebarToggle.querySelector('i');
+        if (toggleIcon) {
+            toggleIcon.style.transform = 'rotate(180deg)';
+        }
+    }
+}
+
+// 切换侧边栏显示/隐藏
+function toggleSidebar() {
+    // 移动设备上
+    if (window.innerWidth <= 768) {
+        document.body.classList.toggle('sidebar-mobile-open');
+    } 
+    // 桌面设备上
+    else {
+        document.body.classList.toggle('sidebar-collapsed');
+        
+        // 箭头方向动画
+        const toggleIcon = sidebarElements.sidebarToggle.querySelector('i');
+        if (document.body.classList.contains('sidebar-collapsed')) {
+            toggleIcon.style.transform = 'rotate(0)';
+        } else {
+            toggleIcon.style.transform = 'rotate(180deg)';
+        }
+        
+        // 存储侧边栏状态
+        localStorage.setItem('sidebar_collapsed', document.body.classList.contains('sidebar-collapsed'));
+    }
+}
+
+// 切换多功能按钮下拉菜单
+function toggleFunctionDropdown() {
+    sidebarElements.multiFunctionButton.classList.toggle('active');
+}
+
+// 响应式处理侧边栏
+function handleResponsiveSidebar() {
+    // 移动设备上
+    if (window.innerWidth <= 768) {
+        document.body.classList.remove('sidebar-collapsed');
+        // 如果之前在移动设备上打开了侧边栏，保持打开状态
+        if (localStorage.getItem('sidebar_mobile_open') === 'true') {
+            document.body.classList.add('sidebar-mobile-open');
+        }
+    } 
+    // 桌面设备上
+    else {
+        document.body.classList.remove('sidebar-mobile-open');
+        // 恢复桌面设备上的侧边栏状态
+        if (localStorage.getItem('sidebar_collapsed') === 'true') {
+            document.body.classList.add('sidebar-collapsed');
+        }
+    }
+}
 
 // 显示欢迎动画
 function showWelcomeAnimation() {
@@ -168,7 +288,7 @@ function showWelcomeAnimation() {
             <div class="welcome-icon">
                 <i class="fas fa-book"></i>
             </div>
-            <h1 class="welcome-title">故事小平台</h1>
+            <h1 class="welcome-title">故事平台</h1>
             <p class="welcome-text">欢迎来到您的个人故事世界</p>
         </div>
     `;
@@ -388,7 +508,7 @@ async function loadCategories() {
             return null;
         }
 
-        console.log('从Supabase获取的数据:', data);
+        // console.log('从Supabase获取的数据:', data);
 
         if (data.length > 0) {
             currentState.categories = data;
@@ -433,34 +553,13 @@ function renderCategories() {
         const isActive = category.id === currentState.activeCategoryId;
         html += `
             <div class="filter-tag ${isActive ? 'active' : ''}" data-id="${category.id}">
-                <span class="tag-text">${category.name}</span>
                 <div class="tag-indicator"></div>
+                <span class="tag-text">${category.name}</span>
             </div>
         `;
     });
 
     elements.categoryTags.innerHTML = html;
-
-    // 根据分类数量应用不同的样式类
-    if (selectedCategories.length < MAX_NAV_CATEGORIES) {
-        // 分类不足10个时居中显示
-        elements.categoryTags.classList.add('center-categories');
-        
-        // 对于极少数分类(1-2个)，保留额外间距
-        if (selectedCategories.length <= 2) {
-            elements.categoryTags.classList.add('very-few-categories');
-        } else {
-            elements.categoryTags.classList.remove('very-few-categories');
-        }
-        
-        // 不再使用few-categories类
-        elements.categoryTags.classList.remove('few-categories');
-    } else {
-        // 分类数量为10个时，恢复默认左对齐
-        elements.categoryTags.classList.remove('center-categories');
-        elements.categoryTags.classList.remove('few-categories');
-        elements.categoryTags.classList.remove('very-few-categories');
-    }
 
     // 渐变淡入动画效果
     let tags = document.querySelectorAll('.filter-tag');
@@ -474,8 +573,10 @@ function renderCategories() {
         }, 50 * index);
     });
 
-    // 创建一个可滚动的导航条处理
+    // 滚动到当前活动分类
+    setTimeout(() => {
     makeNavScrollable();
+    }, 300);
 
     // 绑定分类点击事件
     document.querySelectorAll('.filter-tag').forEach(tag => {
@@ -490,96 +591,25 @@ function renderCategories() {
                 // 在主页直接切换分类
                 handleCategoryChange(categoryId);
             }
+            
+            // 在移动设备上，点击分类后自动收起侧边栏
+            if (window.innerWidth <= 768) {
+                document.body.classList.remove('sidebar-mobile-open');
+            }
         });
     });
 }
 
-// 使导航条可滚动，并添加左右滚动按钮
+// 使活动分类滚动到可见区域，由于分类区域不再滚动，此函数现在仅用于视觉反馈
 function makeNavScrollable() {
-    // 首先检查是否已经存在滚动按钮，如果有则先移除
-    const existingButtons = document.querySelectorAll('.nav-scroll-button');
-    existingButtons.forEach(button => button.remove());
-    
-    // 获取导航容器的宽度和内容总宽度
-    const navContainer = elements.categoryTags;
-    const containerWidth = navContainer.clientWidth;
-    const contentWidth = navContainer.scrollWidth;
-    
-    // 如果内容宽度小于容器宽度，不需要滚动按钮
-    if (contentWidth <= containerWidth) {
-        return;
-    }
-    
-    // 创建左右滚动按钮
-    const leftButton = document.createElement('div');
-    leftButton.className = 'nav-scroll-button nav-scroll-left';
-    leftButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
-    
-    const rightButton = document.createElement('div');
-    rightButton.className = 'nav-scroll-button nav-scroll-right';
-    rightButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
-    
-    // 在导航容器前后添加按钮
-    const headerContainer = document.querySelector('.header-container');
-    if (navContainer.parentNode === headerContainer) {
-        headerContainer.insertBefore(leftButton, navContainer);
-        headerContainer.insertBefore(rightButton, navContainer.nextSibling);
-    }
-    
-    // 初始状态控制 - 检查是否可以向左滚动
-    updateScrollButtons();
-    
-    // 监听导航容器的滚动事件，更新按钮状态
-    navContainer.addEventListener('scroll', updateScrollButtons);
-    
-    // 按钮点击事件
-    leftButton.addEventListener('click', () => {
-        navContainer.scrollBy({ left: -200, behavior: 'smooth' });
-    });
-    
-    rightButton.addEventListener('click', () => {
-        navContainer.scrollBy({ left: 200, behavior: 'smooth' });
-    });
-    
-    // 窗口大小变化时重新检查
-    window.addEventListener('resize', () => {
-        setTimeout(updateScrollButtons, 300);
-    });
-    
-    // 滚动到当前活动分类
-    scrollToActiveCategory();
-    
-    // 更新滚动按钮状态
-    function updateScrollButtons() {
-        // 检查是否可以向左滚动
-        if (navContainer.scrollLeft <= 10) {
-            leftButton.classList.add('disabled');
-        } else {
-            leftButton.classList.remove('disabled');
-        }
-        
-        // 检查是否可以向右滚动
-        if (navContainer.scrollLeft >= navContainer.scrollWidth - navContainer.clientWidth - 10) {
-            rightButton.classList.add('disabled');
-        } else {
-            rightButton.classList.remove('disabled');
-        }
-    }
-    
-    // 滚动到当前活动分类
-    function scrollToActiveCategory() {
-        const activeTag = navContainer.querySelector('.filter-tag.active');
-        if (activeTag) {
-            const tagLeft = activeTag.offsetLeft;
-            const tagWidth = activeTag.offsetWidth;
-            const containerWidth = navContainer.clientWidth;
-            
-            // 滚动到让活动标签居中的位置
-            navContainer.scrollTo({
-                left: tagLeft - (containerWidth / 2) + (tagWidth / 2),
-                behavior: 'smooth'
-            });
-        }
+    // 为活动分类添加轻微的动画效果，提供视觉反馈
+    const activeTag = document.querySelector('.filter-tag.active');
+    if (activeTag) {
+        // 添加短暂的脉冲动画效果
+        activeTag.classList.add('pulse-effect');
+        setTimeout(() => {
+            activeTag.classList.remove('pulse-effect');
+        }, 800);
     }
 }
 
@@ -791,7 +821,7 @@ async function loadStories(append = false) {
 
         const options = {
             orderBy:{column:'id'},
-            pagination:{page:currentState.currentPage,pageSize:20},
+            pagination:{page:currentState.currentPage,pageSize:40},
             filter:{},
             filterLike:{}
         }
@@ -900,7 +930,7 @@ async function loadStoryDetail(story) {
             elements.storyTitle.textContent = story.title;
             elements.storyType.textContent = story.category_name;
             elements.storyReadTime.textContent = `预计阅读时间：${story.read_time}`;
-            elements.storyLength.textContent = story.length;
+            // elements.storyLength.textContent = story.length;
 
             // 逐段渲染内容，增加动画效果
             const paragraphs = story.content.split('\n').filter(p => p.trim() !== '');
@@ -1133,11 +1163,11 @@ function toggleTheme() {
 
     if (isDarkMode) {
         body.classList.remove('dark-theme');
-        elements.themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+        elements.themeToggle.innerHTML = '<i class="fas fa-moon"></i><span>切换主题</span>';
         localStorage.setItem('theme', 'light');
     } else {
         body.classList.add('dark-theme');
-        elements.themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        elements.themeToggle.innerHTML = '<i class="fas fa-sun"></i><span>切换主题</span>';
         localStorage.setItem('theme', 'dark');
     }
 }
@@ -1147,7 +1177,7 @@ function checkSavedTheme() {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
         document.body.classList.add('dark-theme');
-        elements.themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        elements.themeToggle.innerHTML = '<i class="fas fa-sun"></i><span>切换主题</span>';
     }
 }
 
@@ -1459,11 +1489,11 @@ function toggleViewMode() {
     
     if (currentState.isSimpleMode) {
         document.body.classList.add('simple-mode');
-        elements.viewModeToggle.innerHTML = '<i class="fas fa-th"></i>';
+        elements.viewModeToggle.innerHTML = '<i class="fas fa-th"></i><span>切换视图</span>';
         elements.viewModeToggle.title = "切换到图片模式";
     } else {
         document.body.classList.remove('simple-mode');
-        elements.viewModeToggle.innerHTML = '<i class="fas fa-list"></i>';
+        elements.viewModeToggle.innerHTML = '<i class="fas fa-list"></i><span>切换视图</span>';
         elements.viewModeToggle.title = "切换到简约模式";
     }
     
@@ -1484,13 +1514,13 @@ function checkSavedViewMode() {
     if (savedViewMode === 'grid') {
         currentState.isSimpleMode = false;
         document.body.classList.remove('simple-mode');
-        elements.viewModeToggle.innerHTML = '<i class="fas fa-list"></i>';
+        elements.viewModeToggle.innerHTML = '<i class="fas fa-list"></i><span>切换视图</span>';
         elements.viewModeToggle.title = "切换到简约模式";
     } else {
         // 默认使用简约模式 (savedViewMode === 'simple' 或者 null/undefined)
         currentState.isSimpleMode = true;
         document.body.classList.add('simple-mode');
-        elements.viewModeToggle.innerHTML = '<i class="fas fa-th"></i>';
+        elements.viewModeToggle.innerHTML = '<i class="fas fa-th"></i><span>切换视图</span>';
         elements.viewModeToggle.title = "切换到图片模式";
     }
 }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>故事小平台</title>
+    <title>故事平台</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,39 +14,73 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <!-- 新的导航栏设计 -->
-    <header>
-        <div class="header-container">
+    <!-- 侧边栏切换按钮（在收缩状态下可见） -->
+    <div class="sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-chevron-right"></i>
+    </div>
+    
+    <!-- 左侧侧边栏 -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-inner">
+            <!-- 侧边栏顶部 -->
+            <div class="sidebar-header">
             <div class="logo">
                 <i class="fas fa-book"></i>
-                <span>故事小平台</span>
+                <span>故事平台</span>
+            </div>
+                <button class="sidebar-close" id="sidebarClose">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
             </div>
             
-            <!-- 集成到导航栏的分类 -->
-            <div class="nav-categories" id="categoryTags">
-                <!-- 分类标签将通过API动态加载 -->
-            </div>
-            
-            <div class="nav-actions">
-                <button class="nav-action-button" id="searchButton">
-                    <i class="fas fa-search"></i>
-                </button>
-                <button class="nav-action-button" id="viewModeToggle" title="切换视图模式">
-                    <i class="fas fa-list"></i>
-                </button>
-                <button class="nav-action-button" id="categorySettingsButton">
+            <!-- 功能按钮区 -->
+            <div class="sidebar-actions">
+                <!-- 多功能按钮 -->
+                <div class="multi-function-button" id="multiFunctionButton">
+                    <button class="action-button">
                     <i class="fas fa-cog"></i>
+                        <span>基础功能</span>
+                        <i class="fas fa-chevron-down function-dropdown-icon"></i>
                 </button>
-                <button class="nav-action-button" id="themeToggle">
-                    <i class="fas fa-moon"></i>
-                </button>
-                <button class="nav-action-button" id="refreshButton">
-                    <i class="fas fa-sync-alt"></i>
-                </button>
+                    
+                    <!-- 功能下拉菜单 -->
+                    <div class="function-dropdown" id="functionDropdown">
+                        <div class="function-item" id="searchButton">
+                            <i class="fas fa-search"></i>
+                            <span>故事搜索</span>
+                        </div>
+                        <div class="function-item" id="viewModeToggle">
+                            <i class="fas fa-list"></i>
+                            <span>切换视图</span>
+                        </div>
+                        <div class="function-item" id="categorySettingsButton">
+                            <i class="fas fa-sliders-h"></i>
+                            <span>分类设置</span>
+                        </div>
+                        <div class="function-item" id="themeToggle">
+                            <i class="fas fa-moon"></i>
+                            <span>切换主题</span>
+                        </div>
+                        <div class="function-item" id="refreshButton">
+                            <i class="fas fa-sync-alt"></i>
+                            <span>重置刷新</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 分类区域 -->
+            <div class="sidebar-categories">
+                <!-- <h3 class="sidebar-title">分类</h3> -->
+                <div class="sidebar-category-list" id="categoryTags">
+                    <!-- 分类标签将通过API动态加载 -->
+                </div>
             </div>
         </div>
-    </header>
+    </aside>
     
+    <!-- 主内容区域 -->
+    <main class="main-container" id="mainContainer">
     <!-- 悬浮搜索框 -->
     <div class="floating-search" id="floatingSearch">
         <div class="floating-search-container">
@@ -111,18 +145,18 @@
                 
                 <div class="article-meta">
                     <div class="article-account">
-                        <div class="article-account-avatar">
+                        <!-- <div class="article-account-avatar">
                             <i class="fas fa-book-reader"></i>
-                        </div>
+                        </div> -->
                         <div class="article-account-info">
                             <div class="article-account-name" id="storyType"></div>
                             <div class="article-date" id="storyReadTime"></div>
                         </div>
                     </div>
                     
-                    <div class="article-stats">
+                    <!-- <div class="article-stats">
                         <span><i class="far fa-file-alt"></i> <span id="storyLength"></span> 字</span>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             
@@ -143,6 +177,7 @@
         </div>
         
     </div>
+    </main>
     
     <script src="supabase-client.js"></script>
     <script src="app.js"></script>
