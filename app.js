@@ -452,7 +452,6 @@ function checkIfScrollNeeded() {
 
     // 如果文档高度不足以产生滚动条，且还有更多数据可加载，则加载更多
     if (documentHeight <= windowHeight && currentState.hasMoreData) {
-        // console.log('内容不足以产生滚动条，加载更多数据...');
         // 递归加载更多内容，直到出现滚动条或没有更多数据
         loadMoreStories(() => checkIfScrollNeeded());
     }
