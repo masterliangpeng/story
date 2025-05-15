@@ -551,9 +551,10 @@ function renderCategories() {
     // 添加用户选择的分类，并默认选中第一个
     selectedCategories.forEach((category, index) => {
         const isActive = category.id === currentState.activeCategoryId;
+        //<div class="tag-indicator"></div>
         html += `
             <div class="filter-tag ${isActive ? 'active' : ''}" data-id="${category.id}">
-                <div class="tag-indicator"></div>
+                
                 <span class="tag-text">${category.name}</span>
             </div>
         `;
@@ -646,10 +647,11 @@ function renderStories(append = false, keepPosition = false) {
 
     for (const story of storiesToRender) {
         if (currentState.isSimpleMode) {
+             /*<div class="read-indicator"></div>*/
             // 简约模式卡片
             html += `
                 <div class="content-card" onclick="loadStoryDetail(${JSON.stringify(story).replace(/\"/g, "'")})">
-                    <div class="read-indicator"></div>
+                   
                     <div class="card-info">
                         <div class="card-category">${story.category_name}</div>
                         <div class="card-title">${story.title}</div>
