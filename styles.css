@@ -56,6 +56,9 @@ body {
     padding: 0;
 }
 
+/*隐藏滚动条*/
+::-webkit-scrollbar {display:none}
+
 /* 主题切换动画 */
 .theme-transition {
     transition: background-color 0.5s ease, 
@@ -65,6 +68,7 @@ body {
 }
 
 .container {
+    top: 5px;
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 15px;

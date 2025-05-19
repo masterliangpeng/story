@@ -822,7 +822,7 @@ async function loadStories(append = false) {
 
         const options = {
             orderBy:{column:'id'},
-            pagination:{page:currentState.currentPage,pageSize:40},
+            pagination:{page:currentState.currentPage,pageSize:50},
             filter:{},
             filterLike:{}
         }
