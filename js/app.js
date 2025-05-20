@@ -822,6 +822,7 @@ async function loadStories(append = false) {
 
         const options = {
             orderBy:{column:'id'},
+            // columns:'title,content,length,read_time,category_id,category_name',
             pagination:{page:currentState.currentPage,pageSize:50},
             filter:{},
             filterLike:{}
@@ -835,7 +836,7 @@ async function loadStories(append = false) {
         if(currentState.searchKeyword){
             options.filterLike = {title:currentState.searchKeyword};
         }
-
+        
         const { data, error } = await window.supabaseClient.fetchData('story_main',options);
         if (error) {
             console.error('查询Supabase数据出错:', error);

@@ -29,7 +29,6 @@ try {
 // 基本查询函数
 async function fetchData(tableName, options = {}) {
   try {
-
     //构建查询
     let query = supabaseClient
       .from(tableName)

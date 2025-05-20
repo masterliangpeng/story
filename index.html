@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <link rel="shortcut icon" href="book.ico">
+    <link rel="shortcut icon" href="../img/book.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>故事平台</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../css/styles.css">
     <!-- Supabase CDN 引用 -->
     <!-- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
@@ -20,7 +20,7 @@
     <div class="sidebar-toggle" id="sidebarToggle">
         <i class="fas fa-chevron-right"></i>
     </div>
-    
+
     <!-- 左侧侧边栏 -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-inner">
@@ -34,7 +34,7 @@
                     <i class="fas fa-chevron-left"></i>
                 </button>
             </div>
-            
+
             <!-- 功能按钮区 -->
             <div class="sidebar-actions">
                 <!-- 多功能按钮 -->
@@ -44,7 +44,7 @@
                         <span>基础功能</span>
                         <i class="fas fa-chevron-down function-dropdown-icon"></i>
                 </button>
-                    
+
                     <!-- 功能下拉菜单 -->
                     <div class="function-dropdown" id="functionDropdown">
                         <div class="function-item" id="searchButton">
@@ -70,7 +70,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- 分类区域 -->
             <div class="sidebar-categories">
                 <!-- <h3 class="sidebar-title">分类</h3> -->
@@ -80,7 +80,7 @@
             </div>
         </div>
     </aside>
-    
+
     <!-- 主内容区域 -->
     <main class="main-container" id="mainContainer">
     <!-- 悬浮搜索框 -->
@@ -102,7 +102,7 @@
             </button>
         </div>
     </div>
-    
+
     <!-- 分类设置弹窗 -->
     <div class="category-settings-modal" id="categorySettingsModal">
         <div class="category-settings-container">
@@ -120,7 +120,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="container">
         <!-- 首页视图 -->
         <div class="home-view">
@@ -134,7 +134,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- 阅读页面视图 -->
         <div class="article-view">
             <div class="article-header">
@@ -142,9 +142,9 @@
                     <i class="fas fa-arrow-left"></i>
                     <span>返回</span>
                 </button>
-                
+
                 <h1 class="article-title" id="storyTitle"></h1>
-                
+
                 <div class="article-meta">
                     <div class="article-account">
                         <!-- <div class="article-account-avatar">
@@ -155,18 +155,18 @@
                             <div class="article-date" id="storyReadTime"></div>
                         </div>
                     </div>
-                    
+
                     <!-- <div class="article-stats">
                         <span><i class="far fa-file-alt"></i> <span id="storyLength"></span> 字</span>
                     </div> -->
                 </div>
             </div>
-            
+
             <div class="article-content" id="storyContent">
                 <!-- 故事内容将通过API动态加载 -->
             </div>
         </div>
-        
+
         <!-- 全局加载遮罩 -->
         <div class="loading-overlay" id="loadingOverlay">
             <div class="loading-content">
@@ -177,11 +177,11 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
     </main>
-    
-    <script src="supabase-client.js"></script>
-    <script src="app.js"></script>
+
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/app.js"></script>
 </body>
-</html> 
+</html>
