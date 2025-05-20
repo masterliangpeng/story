@@ -13,7 +13,15 @@ let currentState = {
     searchKeyword: '',
     isLoading: false,   // 是否正在加载数据
     hasMoreData: true,   // 是否还有更多数据
-    isSimpleMode: false  // 是否为简约模式
+    isSimpleMode: false,  // 是否为简约模式
+    welcomeMsg:['欢迎来到《小故事铺》这里藏着一段段温暖的小故事，等你慢慢翻阅，慢慢收藏，和我们一起，在文字里遇见生活的温度',
+                '欢迎光临《小故事铺》 ✨ 星光为笔，梦境作纸，每个故事，都藏着属于你的奇遇',
+                '欢迎来到小故事铺 这里的故事都在等你翻开',
+                '小故事铺开门啦 今天也偷偷准备了几个温暖小故事',
+                '这里装满了好玩的、有趣的、感动的故事，快来选一篇讲给你喜欢的人听吧',
+                '喜欢的话就多看几篇 不限量供应小温暖',
+                '每天一则好故事，点亮你的好心情',
+                '欢迎光临《小故事铺》有些故事，白天不敢看，晚上别错过，深夜来访，胆小勿入']
 };
 
 // DOM元素
@@ -280,6 +288,7 @@ function handleResponsiveSidebar() {
 
 // 显示欢迎动画
 function showWelcomeAnimation() {
+    const welcomeText = currentState.welcomeMsg[getRandomInt()];
     // 添加初始欢迎遮罩
     const welcomeOverlay = document.createElement('div');
     welcomeOverlay.className = 'welcome-overlay';
@@ -288,8 +297,8 @@ function showWelcomeAnimation() {
             <div class="welcome-icon">
                 <i class="fas fa-book"></i>
             </div>
-            <h1 class="welcome-title">故事平台</h1>
-            <p class="welcome-text">欢迎来到您的个人故事世界</p>
+            <h1 class="welcome-title">小故事铺</h1>
+            <p class="welcome-text">${welcomeText}</p>
         </div>
     `;
     document.body.appendChild(welcomeOverlay);
@@ -836,7 +845,7 @@ async function loadStories(append = false) {
         if(currentState.searchKeyword){
             options.filterLike = {title:currentState.searchKeyword};
         }
-        
+
         const { data, error } = await window.supabaseClient.fetchData('story_main',options);
         if (error) {
             console.error('查询Supabase数据出错:', error);
@@ -1525,4 +1534,9 @@ function checkSavedViewMode() {
         elements.viewModeToggle.innerHTML = '<i class="fas fa-th"></i><span>切换视图</span>';
         elements.viewModeToggle.title = "切换到图片模式";
     }
+}
+
+//随机数0-10
+function getRandomInt() {
+    return Math.floor(Math.random() * 7);
 }
