@@ -1869,23 +1869,22 @@ input:focus, select:focus, button:focus {
 
 .category-settings-container {
     background-color: var(--surface-color);
-    width: 1100px;
-    max-width: 95%;
-    border-radius: 24px;
-    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.18);
-    padding: 32px;
-    display: flex;
-    flex-direction: column;
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+    padding: 24px;
+    width: 90%;
+    max-width: 1400px;
+    max-height: 90vh;
+    overflow-y: auto;
     position: relative;
-    transform: scale(0.95);
-    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-    animation: floatIn 0.4s forwards;
-    max-height: 95vh;
-    overflow: hidden;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .category-settings-modal.active .category-settings-container {
-    transform: scale(1);
+    transform: translateY(0);
+    opacity: 1;
 }
 
 .settings-header {
@@ -2186,7 +2185,19 @@ input:focus, select:focus, button:focus {
     
     .category-settings-container {
         width: 95%;
-        padding: 28px;
+        max-width: 800px;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .category-items {
+        grid-template-columns: 1fr;
+    }
+    .category-settings-container {
+        width: 95%;
+        max-width: 600px;
+        padding: 16px;
     }
 }
 

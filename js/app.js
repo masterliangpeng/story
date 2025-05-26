@@ -15,7 +15,7 @@ let currentState = {
     hasMoreData: true,   // 是否还有更多数据
     isSimpleMode: false,  // 是否为简约模式
     welcomeMsg:['欢迎来到《小故事铺》这里藏着一段段温暖的小故事，等你慢慢翻阅，慢慢收藏，和我们一起，在文字里遇见生活的温度',
-                '欢迎光临《小故事铺》 ✨ 星光为笔，梦境作纸，每个故事，都藏着属于你的奇遇',
+                '欢迎光临《小故事铺》✨ 星光为笔，梦境作纸，每个故事，都藏着属于你的奇遇',
                 '欢迎来到小故事铺 这里的故事都在等你翻开',
                 '小故事铺开门啦 今天也偷偷准备了几个温暖小故事',
                 '这里装满了好玩的、有趣的、感动的故事，快来选一篇讲给你喜欢的人听吧',
@@ -667,7 +667,6 @@ function renderStories(append = false, keepPosition = false) {
                         <div class="card-meta">
                             <div class="account-name">${story.category_name}</div>
                             <div class="card-stats">
-                                <span><i class="far fa-clock"></i> ${story.read_time}</span>
                                 <span><i class="far fa-file-alt"></i> ${story.length}字</span>
                             </div>
                         </div>
@@ -699,7 +698,6 @@ function renderStories(append = false, keepPosition = false) {
                         <div class="card-meta">
                             <div class="account-name">${story.category_name}</div>
                             <div class="card-stats">
-                                <span><i class="far fa-clock"></i> ${story.read_time}</span>
                                 <span><i class="far fa-file-alt"></i> ${story.length}字</span>
                             </div>
                         </div>
@@ -940,7 +938,6 @@ async function loadStoryDetail(story) {
             // 更新故事详情页面
             elements.storyTitle.textContent = story.title;
             elements.storyType.textContent = story.category_name;
-            elements.storyReadTime.textContent = `预计阅读时间：${story.read_time}`;
             // elements.storyLength.textContent = story.length;
 
             // 逐段渲染内容，增加动画效果
