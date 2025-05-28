@@ -509,8 +509,12 @@ async function loadCategories() {
     showLoading();
 
     try {
+        const options = {
+            orderBy:{column:'sort_id',ascending:false}
+        }
+
         // 直接调用window.supabaseClient中的方法
-        const { data, error } = await window.supabaseClient.fetchData('story_category');
+        const { data, error } = await window.supabaseClient.fetchData('story_category',options);
         if (error) {
             console.error('查询Supabase数据出错:', error);
             return null;
@@ -828,7 +832,7 @@ async function loadStories(append = false) {
     try {
 
         const options = {
-            orderBy:{column:'id'},
+            orderBy:{column:'id',ascending:true},
             // columns:'title,content,length,read_time,category_id,category_name',
             pagination:{page:currentState.currentPage,pageSize:50},
             filter:{},
