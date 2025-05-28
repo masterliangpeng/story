@@ -509,6 +509,7 @@ async function loadCategories() {
     showLoading();
 
     try {
+        //添加排序
         const options = {
             orderBy:{column:'sort_id',ascending:false}
         }
