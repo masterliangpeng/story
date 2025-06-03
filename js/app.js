@@ -307,8 +307,11 @@ function showWelcomeAnimation() {
     welcomeOverlay.className = 'welcome-overlay';
     welcomeOverlay.innerHTML = `
         <div class="welcome-content">
+<!--            <div class="welcome-icon">-->
+<!--                <i class="fas fa-book"></i>-->
+<!--            </div>-->
             <div class="welcome-icon">
-                <i class="fas fa-book"></i>
+                <img src="../img/story.png" alt="小故事铺" class="logo-img">
             </div>
             <h1 class="welcome-title">小故事铺</h1>
             <p class="welcome-text">${welcomeText}</p>

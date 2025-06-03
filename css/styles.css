@@ -85,27 +85,28 @@ header {
 }
 
 .logo {
-    font-size: 22px;
+    font-size: 18px;  /* 稍微减小字体大小 */
     font-weight: 700;
     color: var(--primary-color);
     display: flex;
     align-items: center;
     transition: transform 0.3s ease;
-    white-space: nowrap;
+    padding: 4px 0;  /* 添加一些垂直内边距 */
 }
 
 .logo:hover {
     transform: scale(1.05);
 }
 
-.logo i {
-    margin-right: 12px;
-    color: var(--accent-color);
+.logo-img {
+    width: 35px;  /* 增加图片尺寸 */
+    height: 35px;
+    margin-right: 10px;  /* 稍微减少右边距 */
     transition: transform 0.5s ease;
-    font-size: 24px;
+    object-fit: contain;  /* 确保图片比例正确 */
 }
 
-.logo:hover i {
+.logo:hover .logo-img {
     transform: rotate(15deg);
 }
 
@@ -805,10 +806,10 @@ header {
         font-size: 18px;
     }
 
-    .logo i {
-        font-size: 20px;
-        margin-right: 8px;
-    }
+    /*.logo i {*/
+    /*    font-size: 20px;*/
+    /*    margin-right: 8px;*/
+    /*}*/
 
     .search-bar {
         margin: 0 10px;
@@ -1375,15 +1376,29 @@ header {
 }
 
 .welcome-icon {
-    font-size: 64px;
-    color: var(--accent-color);
+    font-size: 84px;
+    color: var(--primary-light);
     margin-bottom: 10px;
-    animation: icon-pulse 1.5s infinite alternate;
+    position: relative;
+    animation: float 3s ease-in-out infinite;
 }
 
-@keyframes icon-pulse {
-    0% { transform: scale(1); }
-    100% { transform: scale(1.1); }
+.welcome-icon .logo-img {
+    width: 84px;  /* 调大欢迎界面的图片尺寸 */
+    height: 84px;
+    object-fit: contain;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-15px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
 }
 
 .welcome-title {
@@ -1764,9 +1779,9 @@ input:focus, select:focus, button:focus {
         display: none;
     }
 
-    .logo i {
-        margin-right: 0;
-    }
+    /*.logo i {*/
+    /*    margin-right: 0;*/
+    /*}*/
 }
 
 .floating-search .search-bar input::placeholder {
@@ -2524,12 +2539,12 @@ body.simple-mode .card-category {
     transition: transform 0.3s ease;
 }
 
-.sidebar .logo i {
-    margin-right: 12px;
-    color: var(--accent-color);
-    transition: transform 0.5s ease;
-    font-size: 22px;
-}
+/*.sidebar .logo i {*/
+/*    margin-right: 12px;*/
+/*    color: var(--accent-color);*/
+/*    transition: transform 0.5s ease;*/
+/*    font-size: 22px;*/
+/*}*/
 
 .sidebar-close {
     width: 24px;
