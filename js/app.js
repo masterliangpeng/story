@@ -1111,7 +1111,9 @@ function checkSavedTheme() {
 function toggleSearchBox() {
     const searchBox = document.getElementById('floatingSearch');
     const searchInput = document.getElementById('searchInput');
-
+    if(currentState.searchKeyword){
+        searchInput.value = currentState.searchKeyword;
+    }
     if (!searchBox.classList.contains('active')) {
         searchBox.classList.add('active');
         document.body.classList.add('modal-open');

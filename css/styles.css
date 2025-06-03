@@ -1543,12 +1543,13 @@ input:focus, select:focus, button:focus {
     width: 650px;
     max-width: 90%;
     position: relative;
-    transform: translateY(-20px);
+    transform: translateY(-120px);
+    margin-top: -100px;
     transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .floating-search.active .floating-search-container {
-    transform: translateY(0);
+    transform: translateY(-100px); /* 激活状态时的位置也相应调整 */
 }
 
 .floating-search .search-bar {
