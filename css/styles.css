@@ -61,8 +61,8 @@ body {
 
 /* 主题切换动画 */
 .theme-transition {
-    transition: background-color 0.5s ease, 
-                color 0.5s ease, 
+    transition: background-color 0.5s ease,
+                color 0.5s ease,
                 border-color 0.5s ease,
                 box-shadow 0.5s ease;
 }
@@ -309,19 +309,18 @@ header {
     background-color: var(--surface-color);
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: all 0.25s ease;
     cursor: pointer;
     position: relative;
     display: flex;
     flex-direction: column;
-    border: 1px solid rgba(0, 0, 0, 0.03);
-    will-change: transform, box-shadow;
+    border: 1px solid var(--border-color);
 }
 
 .content-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 3px 12px rgba(93, 64, 55, 0.08);
+    background-color: rgba(255, 255, 255, 1);
 }
 
 .card-thumbnail {
@@ -657,7 +656,11 @@ header {
     line-height: 1.6;
     height: 3.2em;
     color: var(--text-primary);
-    text-shadow: 0 0 1px rgba(0, 0, 0, 0.05);
+    transition: color 0.2s ease;
+}
+
+.content-card:hover .card-title {
+    color: var(--primary-color);
 }
 
 .card-meta {
@@ -779,11 +782,11 @@ header {
     .container {
         padding: 0 10px;
     }
-    
+
     .header-container {
         padding: 0 15px;
     }
-    
+
     .search-bar {
         margin: 0 15px;
     }
@@ -793,120 +796,120 @@ header {
     header {
         height: 60px;
     }
-    
+
     .header-container {
         padding: 0 10px;
     }
-    
+
     .logo {
         font-size: 18px;
     }
-    
+
     .logo i {
         font-size: 20px;
         margin-right: 8px;
     }
-    
+
     .search-bar {
         margin: 0 10px;
     }
-    
+
     .search-bar input {
         height: 40px;
         padding: 10px 12px;
         padding-left: 36px;
         font-size: 14px;
     }
-    
+
     .search-bar i {
         left: 12px;
     }
-    
+
     .nav-action-button {
         width: 36px;
         height: 36px;
     }
-    
+
     .filters {
         padding: 15px;
     }
-    
+
     .content-grid {
         gap: 25px;
     }
-    
+
     .card-thumbnail {
         height: 140px;
     }
-    
+
     .card-info {
         padding: 18px 16px;
     }
-    
+
     .card-title {
         font-size: 15px;
         margin-bottom: 10px;
     }
-    
+
     .card-stats {
         gap: 8px;
     }
-    
+
     .account-avatar {
         width: 36px;
         height: 36px;
     }
-    
+
     .article-view {
         padding: 30px 20px;
     }
-    
+
     .article-title {
         font-size: 24px;
         margin-top: 0;
         margin-bottom: 20px;
     }
-    
+
     .article-meta {
         flex-direction: column;
         align-items: flex-start;
         gap: 16px;
     }
-    
+
     .article-content {
         font-size: 16px;
     }
-    
+
     .no-result {
         padding: 50px 25px;
     }
-    
+
     .no-result-animal {
         width: 120px;
         height: 120px;
     }
-    
+
     .no-result-animal i {
         font-size: 50px;
     }
-    
+
     .no-result-title {
         font-size: 24px;
     }
-    
+
     .no-result-text {
         font-size: 16px;
     }
-    
+
     .back-btn {
         margin-bottom: 20px;
         font-size: 15px;
     }
-    
+
     body.simple-mode .content-card {
         max-height: 150px;
     }
-    
+
     body.simple-mode .card-excerpt {
         margin-bottom: 12px;
     }
@@ -1495,14 +1498,14 @@ input:focus, select:focus, button:focus {
         padding: 0 26px;
         margin: 0 -10px;
     }
-    
+
     .filter-tag {
         padding: 6px 14px;
         margin: 0 4px;
         font-size: 14px;
         min-width: 70px;
     }
-    
+
     .nav-scroll-button {
         width: 28px;
         height: 28px;
@@ -1510,15 +1513,15 @@ input:focus, select:focus, button:focus {
     }
 }
 
-/* 悬浮搜索框 */
+/* 悬浮搜索框 - 现代简约风格 */
 .floating-search {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(8px);
+    background-color: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px) saturate(180%);
     height: 100vh;
     z-index: 1000;
     display: flex;
@@ -1526,185 +1529,161 @@ input:focus, select:focus, button:focus {
     justify-content: center;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), visibility 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    pointer-events: none; /* 默认不接受点击事件 */
 }
 
 .floating-search.active {
     opacity: 1;
     visibility: visible;
+    pointer-events: all; /* 激活状态时接受点击事件 */
 }
 
 .floating-search-container {
-    background-color: var(--surface-color);
-    width: 580px;
+    width: 650px;
     max-width: 90%;
-    border-radius: 20px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.18);
-    padding: 18px 22px;
-    display: flex;
     position: relative;
-    transform: scale(0.95);
-    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-    animation: floatIn 0.4s forwards;
-}
-
-@keyframes floatIn {
-    from {
-        transform: scale(0.9);
-        opacity: 0;
-    }
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
+    transform: translateY(-20px);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .floating-search.active .floating-search-container {
-    transform: scale(1);
+    transform: translateY(0);
 }
 
 .floating-search .search-bar {
-    flex: 1;
     margin: 0;
     position: relative;
-}
-
-/* 移除之前的提示文字，用按钮替代 */
-.floating-search .search-bar::before {
-    content: none;
+    width: 100%;
 }
 
 .floating-search .search-bar input {
-    border-radius: 16px;
-    height: 46px;
-    font-size: 15px;
-    background-color: var(--background-color);
-    padding: 0 160px 0 46px;
-    border: 2px solid transparent;
     width: 100%;
+    height: 60px;
+    padding: 0 60px 0 60px;
+    border-radius: 30px;
+    border: 2px solid var(--border-color);
+    font-size: 18px;
+    background-color: var(--surface-color);
     transition: all 0.3s ease;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) inset;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
-/* 清除按钮样式 */
-.search-clear {
+.floating-search .search-bar input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 8px 25px rgba(93, 64, 55, 0.15);
+    transform: translateY(-2px);
+    padding-left: 30px; /* 当输入框获得焦点时，减少左侧padding */
+}
+
+.floating-search .search-bar i.search-icon {
     position: absolute;
-    right: 110px;
+    left: 25px;
     top: 50%;
     transform: translateY(-50%);
-    background: transparent;
-    border: none;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
     color: var(--text-hint);
-    font-size: 15px;
+    font-size: 20px;
+    transition: all 0.3s ease;
+    opacity: 1;
+    visibility: visible;
+}
+
+.floating-search .search-bar input:focus + i.search-icon {
     opacity: 0;
     visibility: hidden;
-    transition: all 0.2s ease, visibility 0.2s ease;
-    z-index: 10;
+    transform: translateY(-50%) translateX(-20px);
 }
 
-.search-clear:hover {
-    opacity: 1;
-    color: var(--primary-color);
-    background-color: rgba(93, 64, 55, 0.06);
+/* 响应式设计中也需要调整 */
+@media (max-width: 768px) {
+    .floating-search .search-bar input {
+        height: 50px;
+        font-size: 16px;
+        padding: 0 25px 0 50px;
+    }
+
+    .floating-search .search-bar input:focus {
+        padding-left: 25px;
+    }
+
+    .floating-search .search-bar i.search-icon {
+        left: 20px;
+        font-size: 18px;
+    }
 }
 
-.search-clear:active {
-    transform: translateY(-50%) scale(0.95);
-}
-
-/* 搜索按钮样式 */
-.search-submit {
-    position: absolute;
-    right: 6px;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: var(--primary-color);
-    border: none;
-    height: 34px;
-    border-radius: 17px;
-    padding: 0 18px;
+/* 关闭按钮 */
+.search-close {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--surface-color);
+    border: 2px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: var(--text-on-primary);
-    font-size: 14px;
-    transition: all 0.25s ease;
-    z-index: 10;
-    font-weight: 500;
-    letter-spacing: 0.3px;
+    color: var(--text-secondary);
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    opacity: 0;
+    transform: scale(0.8);
 }
 
-.search-submit:hover {
-    background-color: var(--primary-dark);
-    transform: translateY(-50%) translateX(-2px);
-    box-shadow: 0 3px 8px rgba(93, 64, 55, 0.25);
+.floating-search.active .search-close {
+    opacity: 1;
+    transform: scale(1);
+    transition-delay: 0.2s;
 }
 
-.search-submit:active {
-    transform: translateY(-50%) scale(0.98);
+.search-close:hover {
+    transform: rotate(90deg) scale(1.1);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background-color: var(--surface-color);
 }
 
-/* 媒体查询更新 */
-@media (max-width: 992px) {
-    .floating-search-container {
-        width: 520px;
-    }
+/* 移除旧的按钮相关样式 */
+.search-actions,
+.search-submit,
+.search-clear {
+    display: none;
 }
 
+/* 暗色主题适配 */
+.dark-theme .floating-search {
+    background-color: rgba(18, 18, 18, 0.98);
+}
+
+/* 响应式设计 */
 @media (max-width: 768px) {
-    .floating-search-container {
-        width: 95%;
-        padding: 16px;
-        border-radius: 18px;
+    .floating-search {
+        align-items: flex-start;
+        padding-top: 20vh;
     }
-    
+
     .floating-search .search-bar input {
-        height: 42px;
-        font-size: 14px;
-        border-radius: 14px;
-        padding: 0 95px 0 40px;
+        height: 50px;
+        font-size: 16px;
+        padding: 0 25px 0 50px;
     }
-    
+
     .floating-search .search-bar i.search-icon {
-        left: 15px;
-        font-size: 15px;
+        left: 20px;
+        font-size: 18px;
     }
-    
-    .search-clear {
-        right: 80px;
-        width: 28px;
-        height: 28px;
-        font-size: 14px;
-    }
-    
-    .search-submit {
-        height: 30px;
-        padding: 0 14px;
-        border-radius: 15px;
-        font-size: 13px;
-    }
-    
-    .search-submit span {
-        display: none;
-    }
-    
-    .search-submit i {
-        margin-right: 0;
-    }
-    
+
     .search-close {
-        width: 34px;
-        height: 34px;
-        font-size: 15px;
-        margin-left: 10px;
+        top: 20px;
+        right: 20px;
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
     }
 }
 
@@ -1761,29 +1740,29 @@ input:focus, select:focus, button:focus {
         padding: 0;
         overflow-x: auto;
     }
-    
+
     .nav-categories .filter-tag {
         padding: 6px 12px;
         font-size: 13px;
     }
-    
+
     .floating-search-container {
         padding: 15px;
     }
-    
+
     .floating-search .search-bar input {
         height: 45px;
     }
-    
+
     .header-container {
         flex-wrap: nowrap;
         padding: 0 10px;
     }
-    
+
     .logo span {
         display: none;
     }
-    
+
     .logo i {
         margin-right: 0;
     }
@@ -2182,7 +2161,7 @@ input:focus, select:focus, button:focus {
     .category-items {
         grid-template-columns: repeat(4, 1fr);
     }
-    
+
     .category-settings-container {
         width: 95%;
         max-width: 800px;
@@ -2371,16 +2350,16 @@ body.simple-mode .card-meta {
     body.simple-mode .content-grid {
         grid-template-columns: 1fr;
     }
-    
+
     body.simple-mode .content-card {
         max-height: 230px;
     }
-    
+
     body.simple-mode .card-excerpt {
         -webkit-line-clamp: 4;
         margin-bottom: 16px;
     }
-    
+
     body.simple-mode .card-info {
         padding: 14px 16px;
     }
@@ -2412,7 +2391,7 @@ body.simple-mode .card-category {
     font-size: 11px;
     padding: 3px 8px;
     background-color: rgba(93, 64, 55, 0.1);
-    color: var(--primary-color);
+    color: var(--primary-light);
 }
 
 /* Toast通知样式 */
@@ -2481,23 +2460,23 @@ body.simple-mode .card-category {
         max-height: 85vh;
         border-radius: 20px;
     }
-    
+
     .category-items {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .settings-header h3 {
         font-size: 18px;
     }
-    
+
     .settings-description {
         font-size: 14px;
     }
-    
+
     .category-divider {
         margin: 0 -24px;
     }
-    
+
     .category-action-btn {
         width: 26px;
         height: 26px;
@@ -2782,12 +2761,12 @@ body.sidebar-collapsed .sidebar-toggle {
     .sidebar {
         width: 250px;
     }
-    
+
     .main-container {
         margin-left: 250px;
         width: calc(100% - 250px);
     }
-    
+
     /* 调整侧边栏内部间距 */
     .sidebar-header,
     .sidebar-actions,
@@ -2803,21 +2782,21 @@ body.sidebar-collapsed .sidebar-toggle {
         width: 280px;
         transform: translateX(-280px);
     }
-    
+
     .main-container {
         margin-left: 0;
         width: 100%;
     }
-    
+
     body.sidebar-mobile-open .sidebar {
         transform: translateX(0);
     }
-    
+
     .sidebar-toggle {
         opacity: 1;
         visibility: visible;
     }
-    
+
     /* 添加遮罩层防止点击 */
     .sidebar-overlay {
         position: fixed;
@@ -2829,7 +2808,7 @@ body.sidebar-collapsed .sidebar-toggle {
         z-index: 99;
         display: none;
     }
-    
+
     body.sidebar-mobile-open .sidebar-overlay {
         display: block;
     }

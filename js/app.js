@@ -45,8 +45,8 @@ const elements = {
     searchButton: document.getElementById('searchButton'),
     floatingSearch: document.getElementById('floatingSearch'),
     searchClose: document.getElementById('searchClose'),
-    searchClear: document.getElementById('searchClear'),
-    searchSubmit: document.getElementById('searchSubmit'),
+    // searchClear: document.getElementById('searchClear'),
+    // searchSubmit: document.getElementById('searchSubmit'),
     categorySettingsButton: document.getElementById('categorySettingsButton'),
     categorySettingsModal: document.getElementById('categorySettingsModal'),
     categorySettingsList: document.getElementById('categorySettingsList'),
@@ -62,6 +62,19 @@ const sidebarElements = {
     functionDropdown: document.getElementById('functionDropdown'),
     mainContainer: document.getElementById('mainContainer')
 };
+
+// document.addEventListener('contextmenu',
+//     event => event.preventDefault()
+// );
+//
+// document.addEventListener("keydown", function (event){
+//     if (event.ctrlKey){
+//         event.preventDefault();
+//     }
+//     if(event.keyCode == 123){
+//         event.preventDefault();
+//     }
+// });
 
 // 初始化
 document.addEventListener('DOMContentLoaded', () => {
@@ -97,19 +110,19 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.searchClose.addEventListener('click', closeSearchBox);
 
     // 新增的清除和提交按钮 - 改为通过浮动搜索框找到按钮
-    elements.floatingSearch.querySelector('#searchClear').addEventListener('click', clearSearchInput);
-    elements.floatingSearch.querySelector('#searchSubmit').addEventListener('click', submitSearch);
+    // elements.floatingSearch.querySelector('#searchClear').addEventListener('click', clearSearchInput);
+    // elements.floatingSearch.querySelector('#searchSubmit').addEventListener('click', submitSearch);
 
     // 分类设置按钮点击事件
     elements.categorySettingsButton.addEventListener('click', openCategorySettingsModal);
     elements.settingsClose.addEventListener('click', closeCategorySettingsModal);
 
     // 点击遮罩关闭搜索框
-    elements.floatingSearch.addEventListener('click', (e) => {
-        if (e.target === elements.floatingSearch) {
-            closeSearchBox();
-        }
-    });
+    // elements.floatingSearch.addEventListener('click', (e) => {
+    //     if (e.target === elements.floatingSearch) {
+    //         closeSearchBox();
+    //     }
+    // });
 
     // 点击设置弹窗背景关闭弹窗
     elements.categorySettingsModal.addEventListener('click', (e) => {
@@ -156,16 +169,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 监听输入变化以显示/隐藏清除按钮
-    floatingSearchInput.addEventListener('input', () => {
-        const floatingSearchClear = elements.floatingSearch.querySelector('#searchClear');
-        if (floatingSearchInput.value.trim() === '') {
-            floatingSearchClear.style.visibility = 'hidden';
-            floatingSearchClear.style.opacity = '0';
-        } else {
-            floatingSearchClear.style.visibility = 'visible';
-            floatingSearchClear.style.opacity = '0.7';
-        }
-    });
+    // floatingSearchInput.addEventListener('input', () => {
+    //     const floatingSearchClear = elements.floatingSearch.querySelector('#searchClear');
+    //     if (floatingSearchInput.value.trim() === '') {
+    //         floatingSearchClear.style.visibility = 'hidden';
+    //         floatingSearchClear.style.opacity = '0';
+    //     } else {
+    //         floatingSearchClear.style.visibility = 'visible';
+    //         floatingSearchClear.style.opacity = '0.7';
+    //     }
+    // });
 
     // 检查并应用存储的主题
     checkSavedTheme();
@@ -458,7 +471,6 @@ function checkIfScrollNeeded() {
         document.documentElement.scrollHeight,
         document.documentElement.offsetHeight
     );
-
     // 如果文档高度不足以产生滚动条，且还有更多数据可加载，则加载更多
     if (documentHeight <= windowHeight && currentState.hasMoreData) {
         // 递归加载更多内容，直到出现滚动条或没有更多数据
@@ -520,8 +532,6 @@ async function loadCategories() {
             console.error('查询Supabase数据出错:', error);
             return null;
         }
-
-        // console.log('从Supabase获取的数据:', data);
 
         if (data.length > 0) {
             currentState.categories = data;
@@ -855,14 +865,11 @@ async function loadStories(append = false) {
             return null;
         }
 
-        //console.log('从Supabase获取的数据:', data);
-
-
         if (data.length > 0) {
             const newStories = data;
 
             // 判断是否还有更多数据
-            currentState.hasMoreData = newStories.length > 0;
+            currentState.hasMoreData = newStories.length > 50;
 
             // 根据append参数决定是追加还是替换数据
             if (append) {
@@ -882,7 +889,6 @@ async function loadStories(append = false) {
                 }, 300);
             }
         } else {
-            console.error('加载故事列表失败:', data.msg);
             // 加载失败也标记为没有更多数据，避免一直请求错误
             currentState.hasMoreData = false;
 
@@ -1019,99 +1025,6 @@ function handleCategoryChange(categoryId, isRefresh = false) {
     }, 150);
 }
 
-// 监听搜索输入变化，控制清除按钮显示
-function toggleClearButton() {
-    if (elements.searchInput.value.trim() === '') {
-        elements.searchClear.style.visibility = 'hidden';
-        elements.searchClear.style.opacity = '0';
-    } else {
-        elements.searchClear.style.visibility = 'visible';
-        elements.searchClear.style.opacity = '0.7';
-    }
-}
-
-// 清除搜索输入
-function clearSearchInput() {
-    const floatingSearchInput = elements.floatingSearch.querySelector('#searchInput');
-    const floatingSearchClear = elements.floatingSearch.querySelector('#searchClear');
-
-    if (floatingSearchInput) {
-        floatingSearchInput.value = '';
-        floatingSearchInput.focus();
-
-        // 隐藏清除按钮
-        if (floatingSearchClear) {
-            floatingSearchClear.style.visibility = 'hidden';
-            floatingSearchClear.style.opacity = '0';
-        }
-    }
-}
-
-// 处理搜索表单提交
-function submitSearch() {
-    const floatingSearchInput = elements.floatingSearch.querySelector('#searchInput');
-    if (floatingSearchInput) {
-        const keyword = floatingSearchInput.value.trim();
-        performSearch(keyword);
-    }
-}
-
-// 处理搜索按键事件
-function handleSearchKeydown(event) {
-    // 只有当按下Enter键时才触发搜索
-    if (event.key === 'Enter') {
-        const keyword = event.target.value.trim();
-        performSearch(keyword);
-    }
-}
-
-// 执行搜索
-function performSearch(keyword) {
-    // 如果搜索关键词没变，不重新搜索
-    if (keyword === currentState.searchKeyword) {
-        // 即使关键词没变，也应该关闭搜索框
-        closeSearchBox();
-        return;
-    }
-
-    // 添加搜索反馈动画
-    const floatingSearchBar = elements.floatingSearch.querySelector('.search-bar');
-    if (floatingSearchBar) {
-        floatingSearchBar.classList.add('search-active');
-        setTimeout(() => {
-            floatingSearchBar.classList.remove('search-active');
-        }, 400);
-    }
-
-    currentState.searchKeyword = keyword;
-    currentState.currentPage = 1;
-    currentState.hasMoreData = true; // 重置分页状态
-    currentState.stories = []; // 清空当前故事列表
-
-    // 关闭搜索框 (这会自动恢复滚动状态)
-    closeSearchBox();
-
-    // 显示加载中状态
-    showLoading();
-
-    // 添加淡出动画
-    const cards = elements.storyGrid.querySelectorAll('.content-card');
-    cards.forEach((card, index) => {
-        card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(-10px)';
-    });
-
-    // 等待动画完成后清空内容并加载新故事
-    setTimeout(() => {
-        // 清空现有内容
-        elements.storyGrid.innerHTML = '';
-
-        // 重新加载故事
-        loadStories();
-    }, 300);
-}
-
 // 显示首页
 function showHome(fromArticle = false, categoryId = null) {
     // 添加转场动画
@@ -1194,65 +1107,85 @@ function checkSavedTheme() {
     }
 }
 
-// 显示搜索框
+// 搜索相关功能
 function toggleSearchBox() {
-    elements.floatingSearch.classList.add('active');
+    const searchBox = document.getElementById('floatingSearch');
+    const searchInput = document.getElementById('searchInput');
 
-    // 禁止背景滚动
-    document.body.classList.add('modal-open');
-
-    // 记录当前滚动位置
-    window.modalScrollY = window.scrollY;
-
-    // 直接获取浮动搜索框中的搜索栏元素，而不是使用外部的 elements.searchBar
-    const floatingSearchBar = elements.floatingSearch.querySelector('.search-bar');
-    const floatingSearchInput = elements.floatingSearch.querySelector('#searchInput');
-    const floatingSearchClear = elements.floatingSearch.querySelector('#searchClear');
-
-    // 添加焦点效果类到浮动搜索框中的搜索栏
-    if (floatingSearchBar) {
-        floatingSearchBar.classList.add('search-focus');
+    if (!searchBox.classList.contains('active')) {
+        searchBox.classList.add('active');
+        document.body.classList.add('modal-open');
+        // 延迟聚焦以等待过渡动画完成
+        setTimeout(() => {
+            searchInput.focus();
+        }, 300);
     }
+}
 
-    // 清除按钮状态
-    if (floatingSearchInput && floatingSearchClear) {
-        if (floatingSearchInput.value.trim() === '') {
-            floatingSearchClear.style.visibility = 'hidden';
-            floatingSearchClear.style.opacity = '0';
-        } else {
-            floatingSearchClear.style.visibility = 'visible';
-            floatingSearchClear.style.opacity = '0.7';
-        }
+function closeSearchBox() {
+    const searchBox = document.getElementById('floatingSearch');
+    const searchInput = document.getElementById('searchInput');
+
+    searchBox.classList.remove('active');
+    document.body.classList.remove('modal-open');
+    searchInput.value = '';
+}
+
+function handleSearchKeydown(event) {
+    if (event.key === 'Enter' && !event.isComposing) {
+        const searchInput = document.getElementById('searchInput');
+        const keyword = searchInput.value.trim();
+        performSearch(keyword);
+    } else if (event.key === 'Escape') {
+        closeSearchBox();
     }
+}
 
-    // 短暂延迟后设置焦点，等待动画完成
+// 执行搜索
+function performSearch(keyword) {
+    // 如果搜索关键词没变，不重新搜索
+    // if (keyword === currentState.searchKeyword) {
+    //     closeSearchBox();
+    //     return;
+    // }
+
+    currentState.searchKeyword = keyword;
+    currentState.currentPage = 1;
+    currentState.hasMoreData = true;
+    currentState.stories = [];
+
+    closeSearchBox();
+    showLoading();
+
+    // 添加淡出动画
+    const cards = elements.storyGrid.querySelectorAll('.content-card');
+    cards.forEach(card => {
+        card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(-10px)';
+    });
+
+    // 等待动画完成后清空内容并加载新故事
     setTimeout(() => {
-        if (floatingSearchInput) {
-            floatingSearchInput.focus();
-        }
+        elements.storyGrid.innerHTML = '';
+        loadStories();
     }, 300);
 }
 
-// 关闭搜索框
-function closeSearchBox() {
-    elements.floatingSearch.classList.remove('active');
+// 初始化搜索功能
+function initSearch() {
+    const searchInput = document.getElementById('searchInput');
+    const searchClose = document.getElementById('searchClose');
 
-    // 恢复背景滚动
-    document.body.classList.remove('modal-open');
+    // 监听按键
+    searchInput.addEventListener('keydown', handleSearchKeydown);
 
-    // 恢复滚动位置
-    setTimeout(() => {
-        window.scrollTo(0, window.modalScrollY || 0);
-    }, 10);
-
-    // 直接获取浮动搜索框中的搜索栏元素
-    const floatingSearchBar = elements.floatingSearch.querySelector('.search-bar');
-
-    // 移除焦点效果类
-    if (floatingSearchBar) {
-        floatingSearchBar.classList.remove('search-focus');
-    }
+    // 关闭按钮
+    searchClose.addEventListener('click', closeSearchBox);
 }
+
+// 在文档加载完成后初始化
+document.addEventListener('DOMContentLoaded', initSearch);
 
 // 打开分类设置弹窗
 function openCategorySettingsModal() {

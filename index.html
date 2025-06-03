@@ -40,10 +40,10 @@
                 <!-- 多功能按钮 -->
                 <div class="multi-function-button" id="multiFunctionButton">
                     <button class="action-button">
-                    <i class="fas fa-cog"></i>
+                        <i class="fas fa-cog"></i>
                         <span>基础功能</span>
                         <i class="fas fa-chevron-down function-dropdown-icon"></i>
-                </button>
+                    </button>
 
                     <!-- 功能下拉菜单 -->
                     <div class="function-dropdown" id="functionDropdown">
@@ -85,21 +85,14 @@
     <main class="main-container" id="mainContainer">
     <!-- 悬浮搜索框 -->
     <div class="floating-search" id="floatingSearch">
+        <button class="search-close" id="searchClose">
+            <i class="fas fa-times"></i>
+        </button>
         <div class="floating-search-container">
             <div class="search-bar">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" id="searchInput" placeholder="搜索故事标题或关键词...">
-                <button class="search-clear" id="searchClear">
-                    <i class="fas fa-times-circle"></i>
-                </button>
-                <button class="search-submit" id="searchSubmit">
-                    <!-- <i class="fas fa-arrow-right"></i> -->
-                    <span>搜索</span>
-                </button>
+                <input type="text" id="searchInput" placeholder="按回车键搜索...">
             </div>
-            <button class="search-close" id="searchClose">
-                <i class="fas fa-times"></i>
-            </button>
         </div>
     </div>
 

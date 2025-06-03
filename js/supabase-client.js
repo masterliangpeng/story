@@ -136,8 +136,5 @@ async function deleteData(tableName, id) {
 
 // 导出函数
 window.supabaseClient = {
-  fetchData,
-  insertData,
-  updateData,
-  deleteData
+  fetchData
 };
