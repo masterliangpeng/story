@@ -33,7 +33,6 @@ const elements = {
     storyTitle: document.getElementById('storyTitle'),
     storyType: document.getElementById('storyType'),
     storyReadTime: document.getElementById('storyReadTime'),
-    // storyLength: document.getElementById('storyLength'),
     storyContent: document.getElementById('storyContent'),
     homeView: document.querySelector('.home-view'),
     articleView: document.querySelector('.article-view'),
@@ -45,8 +44,6 @@ const elements = {
     searchButton: document.getElementById('searchButton'),
     floatingSearch: document.getElementById('floatingSearch'),
     searchClose: document.getElementById('searchClose'),
-    // searchClear: document.getElementById('searchClear'),
-    // searchSubmit: document.getElementById('searchSubmit'),
     categorySettingsButton: document.getElementById('categorySettingsButton'),
     categorySettingsModal: document.getElementById('categorySettingsModal'),
     categorySettingsList: document.getElementById('categorySettingsList'),
@@ -109,20 +106,10 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.searchButton.addEventListener('click', toggleSearchBox);
     elements.searchClose.addEventListener('click', closeSearchBox);
 
-    // 新增的清除和提交按钮 - 改为通过浮动搜索框找到按钮
-    // elements.floatingSearch.querySelector('#searchClear').addEventListener('click', clearSearchInput);
-    // elements.floatingSearch.querySelector('#searchSubmit').addEventListener('click', submitSearch);
-
     // 分类设置按钮点击事件
     elements.categorySettingsButton.addEventListener('click', openCategorySettingsModal);
     elements.settingsClose.addEventListener('click', closeCategorySettingsModal);
 
-    // 点击遮罩关闭搜索框
-    // elements.floatingSearch.addEventListener('click', (e) => {
-    //     if (e.target === elements.floatingSearch) {
-    //         closeSearchBox();
-    //     }
-    // });
 
     // 点击设置弹窗背景关闭弹窗
     elements.categorySettingsModal.addEventListener('click', (e) => {
@@ -167,18 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
             floatingSearchBar.classList.remove('search-focus');
         }
     });
-
-    // 监听输入变化以显示/隐藏清除按钮
-    // floatingSearchInput.addEventListener('input', () => {
-    //     const floatingSearchClear = elements.floatingSearch.querySelector('#searchClear');
-    //     if (floatingSearchInput.value.trim() === '') {
-    //         floatingSearchClear.style.visibility = 'hidden';
-    //         floatingSearchClear.style.opacity = '0';
-    //     } else {
-    //         floatingSearchClear.style.visibility = 'visible';
-    //         floatingSearchClear.style.opacity = '0.7';
-    //     }
-    // });
 
     // 检查并应用存储的主题
     checkSavedTheme();
@@ -307,9 +282,6 @@ function showWelcomeAnimation() {
     welcomeOverlay.className = 'welcome-overlay';
     welcomeOverlay.innerHTML = `
         <div class="welcome-content">
-<!--            <div class="welcome-icon">-->
-<!--                <i class="fas fa-book"></i>-->
-<!--            </div>-->
             <div class="welcome-icon">
                 <img src="../img/story.png" alt="小故事铺" class="logo-img">
             </div>
@@ -361,21 +333,16 @@ function refreshHome() {
         // 显示加载中状态并重新加载第一个分类
         if (currentState.categories.length > 0) {
             // 使用用户已选择的第一个分类，如果没有选择则使用第一个分类
-            const firstSelectedCategory = currentState.selectedCategoryIds.length > 0
-                ? currentState.categories.find(c => c.id === currentState.selectedCategoryIds[0])
-                : currentState.categories[0];
-
-            if (firstSelectedCategory) {
-                handleCategoryChange(firstSelectedCategory.id, true);
+            const selectedCategoryId = currentState.selectedCategoryIds[0];
+            handleCategoryChange(selectedCategoryId, true);
 
                 // 选中第一个分类标签
                 document.querySelectorAll('.filter-tag').forEach(tag => {
                     tag.classList.remove('active');
-                    if (parseInt(tag.dataset.id) === firstSelectedCategory.id) {
+                if (parseInt(tag.dataset.id) === selectedCategoryId) {
                         tag.classList.add('active');
                     }
                 });
-            }
         }
 
         // 淡入动画
@@ -641,7 +608,7 @@ function makeNavScrollable() {
 }
 
 // 渲染故事列表
-function renderStories(append = false, keepPosition = false) {
+function renderStories(append = false, keepPosition = false, bookMode = false) {
     // 如果要保持当前滚动位置，记录位置
     const scrollPos = keepPosition ? window.scrollY : 0;
 
@@ -673,15 +640,34 @@ function renderStories(append = false, keepPosition = false) {
 
     for (const story of storiesToRender) {
         if (currentState.isSimpleMode) {
-             /*<div class="read-indicator"></div>*/
-            // 简约模式卡片
+            //书本模式
+            if(bookMode){
             html += `
+                <div class="content-book-card" onclick="loadStoryDetail(${JSON.stringify(story).replace(/\"/g, "'")})">
+                    <div class="card-book-info">
+                        <div class="card-book-img">
+                            <img src="../img/白夜行.png" alt="${story.title}">
+                        </div>
+                        <div class="card-book-content">
+                        <div class="card-book-title">${story.title}</div>
+                            <div class="card-book-excerpt">${story.excerpt}</div>
+                            <div class="card-book-meta">
+                                <span><i class="fas fa-book"></i> ${story.category_name || '未分类'}</span>
+                                <span><i class="fas fa-clock"></i> ${story.created_at ? new Date(story.created_at).toLocaleDateString() : '未知时间'}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            }else{
+                // 简约模式卡片
+                html += `
                 <div class="content-card" onclick="loadStoryDetail(${JSON.stringify(story).replace(/\"/g, "'")})">
-                   
+
                     <div class="card-info">
                         <div class="card-category">${story.category_name}</div>
                         <div class="card-title">${story.title}</div>
-                        <div class="card-excerpt">${getExcerpt(story.content, 80)}</div>
+                        <div class="card-excerpt">${story.excerpt}</div>
                         <div class="card-meta">
                             <div class="account-name">${story.category_name}</div>
                             <div class="card-stats">
@@ -691,6 +677,7 @@ function renderStories(append = false, keepPosition = false) {
                     </div>
                 </div>
             `;
+            }
         } else {
             // 图片模式卡片 (原有样式)
             html += `
@@ -810,19 +797,19 @@ function showCardSkeletons() {
 }
 
 // 获取故事内容的摘要
-function getExcerpt(content, maxLength = 80) {
-    if (!content) return '暂无内容预览';
-
-    // 清理内容，移除多余空格和换行
-    const cleanContent = content.replace(/\s+/g, ' ').trim();
-
-    // 截取指定长度
-    if (cleanContent.length <= maxLength) {
-        return cleanContent;
-    }
-
-    return cleanContent.substring(0, maxLength) + '...';
-}
+// function getExcerpt(content, maxLength = 80) {
+//     if (!content) return '暂无内容预览';
+//
+//     // 清理内容，移除多余空格和换行
+//     const cleanContent = content.replace(/\s+/g, ' ').trim();
+//
+//     // 截取指定长度
+//     if (cleanContent.length <= maxLength) {
+//         return cleanContent;
+//     }
+//
+//     return cleanContent.substring(0, maxLength) + '...';
+// }
 
 // 加载故事列表
 async function loadStories(append = false) {
@@ -847,7 +834,6 @@ async function loadStories(append = false) {
 
         const options = {
             orderBy:{column:'id',ascending:true},
-            // columns:'title,content,length,read_time,category_id,category_name',
             pagination:{page:currentState.currentPage,pageSize:50},
             filter:{},
             filterLike:{}
@@ -872,7 +858,7 @@ async function loadStories(append = false) {
             const newStories = data;
 
             // 判断是否还有更多数据
-            currentState.hasMoreData = newStories.length > 50;
+            currentState.hasMoreData = newStories.length >= 50;
 
             // 根据append参数决定是追加还是替换数据
             if (append) {
@@ -881,8 +867,11 @@ async function loadStories(append = false) {
                 currentState.stories = newStories;
             }
 
+            //分类对象
+            const category = currentState.categories.find(c => c.id === currentState.activeCategoryId);
+            const bookModel = category.is_book == '0';
             // 渲染故事列表
-            renderStories(append, append);  // 在追加模式下保持滚动位置
+            renderStories(append, append, bookModel);  // 在追加模式下保持滚动位置
 
             // 首次加载或分类切换后，检查是否需要加载更多内容以产生滚动条
             if (!append) {
@@ -940,22 +929,20 @@ async function loadStories(append = false) {
 
 // 加载故事详情
 async function loadStoryDetail(story) {
-    // 解析JSON字符串为对象
-    // const story = JSON.parse(storyJson);
-
     // 显示加载遮罩
     showLoading();
 
     try {
-        let content = story.content;
-        if (content != null || content != '') {
+        const options = {filter:{story_id:story.id}}
+        const { data, error } = await window.supabaseClient.fetchData('story_content',options);
+        if (data) {
+            const newData =  data[0];
             // 更新故事详情页面
             elements.storyTitle.textContent = story.title;
             elements.storyType.textContent = story.category_name;
-            // elements.storyLength.textContent = story.length;
 
             // 逐段渲染内容，增加动画效果
-            const paragraphs = story.content.split('\n').filter(p => p.trim() !== '');
+            const paragraphs = newData.content.split('\n').filter(p => p.trim() !== '');
             elements.storyContent.innerHTML = '';
 
             // 显示故事详情页面
@@ -1453,7 +1440,9 @@ function toggleViewMode() {
 
     // 重新渲染故事列表，以应用新的视图模式
     if (currentState.stories.length > 0) {
-        renderStories(false, true);
+        const category = currentState.categories.find(c => c.id === currentState.activeCategoryId);
+        const bookModel = category.is_book == '0';
+        renderStories(false, true, bookModel);
     }
 }
 

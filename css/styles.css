@@ -2935,19 +2935,6 @@ header {
     z-index: 2;
 }
 
-/* .sidebar .filter-tag .tag-indicator {
-    width: 3px;
-    height: 0;
-    background: var(--accent-color);
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    transition: height 0.3s ease;
-    border-radius: 3px;
-    opacity: 0;
-} */
-
 .sidebar .filter-tag.active {
     background: rgba(92, 58, 30, 0.1);
     color: var(--primary-color);
@@ -2956,18 +2943,115 @@ header {
     transform: none;
 }
 
-/* .sidebar .filter-tag.active .tag-indicator {
-    height: 70%;
-    opacity: 1;
-} */
-
 .sidebar .filter-tag:hover {
     background: rgba(224, 201, 176, 0.2);
     color: var(--primary-color);
     transform: translateX(5px);
 }
 
-/* .sidebar .filter-tag:hover .tag-indicator {
-    height: 40%;
-    opacity: 0.7;
-} */
+/* 书籍卡片样式 */
+.content-book-card {
+    background-color: var(--surface-color);
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    transition: all 0.25s ease;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-color);
+    padding: 20px;
+}
+
+.content-book-card:hover {
+    box-shadow: var(--hover-shadow);
+    transform: translateY(-3px);
+}
+
+.card-book-info {
+    display: flex;
+    gap: 20px;
+}
+
+.card-book-img {
+    flex-shrink: 0;
+    width: 120px;
+    height: 160px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.card-book-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.content-book-card:hover .card-book-img {
+    transform: scale(1.02) rotate(1deg);
+}
+
+.card-book-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-book-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.card-book-excerpt {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.card-book-meta {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.card-book-meta i {
+    color: var(--primary-color);
+    margin-right: 4px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .card-book-info {
+        gap: 15px;
+    }
+
+    .card-book-img {
+        width: 100px;
+        height: 140px;
+    }
+
+    .card-book-title {
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+
+    .card-book-excerpt {
+        font-size: 13px;
+        -webkit-line-clamp: 3;
+    }
+}

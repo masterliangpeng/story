@@ -1,11 +1,7 @@
 {
     "mouseover": [
         {
-            "selector": ".title a",
-            "text": ["要看看 {text} 么？"]
-        },
-        {
-            "selector": ".searchbox",
+            "selector": "#searchInput",
             "text": ["在找什么东西呢，需要帮忙吗？"]
         }
     ],
