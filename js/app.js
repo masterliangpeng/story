@@ -752,65 +752,6 @@ function renderStories(append = false, keepPosition = false, bookMode = false) {
     }
 }
 
-// 显示卡片加载骨架屏
-function showCardSkeletons() {
-    const cardCount = window.innerWidth > 768 ? 6 : 4;
-    let skeletonHtml = '';
-
-    // 根据当前模式显示不同的骨架屏
-    if (currentState.isSimpleMode) {
-        // 简约模式骨架屏
-        for (let i = 0; i < cardCount; i++) {
-            skeletonHtml += `
-                <div class="content-card-skeleton">
-                    <div class="skeleton-info">
-                        <div class="skeleton-title"></div>
-                        <div class="skeleton-title" style="width: 70%;"></div>
-                        <div class="skeleton-meta">
-                            <div class="skeleton-meta-item"></div>
-                            <div class="skeleton-meta-item"></div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-    } else {
-        // 图片模式骨架屏（原有）
-        for (let i = 0; i < cardCount; i++) {
-            skeletonHtml += `
-                <div class="content-card-skeleton">
-                    <div class="skeleton-thumbnail"></div>
-                    <div class="skeleton-info">
-                        <div class="skeleton-title"></div>
-                        <div class="skeleton-title"></div>
-                        <div class="skeleton-meta">
-                            <div class="skeleton-meta-item"></div>
-                            <div class="skeleton-meta-item"></div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-    }
-
-    elements.storyGrid.innerHTML = skeletonHtml;
-}
-
-// 获取故事内容的摘要
-// function getExcerpt(content, maxLength = 80) {
-//     if (!content) return '暂无内容预览';
-//
-//     // 清理内容，移除多余空格和换行
-//     const cleanContent = content.replace(/\s+/g, ' ').trim();
-//
-//     // 截取指定长度
-//     if (cleanContent.length <= maxLength) {
-//         return cleanContent;
-//     }
-//
-//     return cleanContent.substring(0, maxLength) + '...';
-// }
-
 // 加载故事列表
 async function loadStories(append = false) {
     // 如果正在加载且不是被loadMoreStories调用（append=true），不重复请求
@@ -826,12 +767,9 @@ async function loadStories(append = false) {
         currentState.isLoading = true;
         // 显示加载遮罩
         showLoading();
-        // 显示骨架屏
-        showCardSkeletons();
     }
 
     try {
-
         const options = {
             orderBy:{column:'id',ascending:true},
             pagination:{page:currentState.currentPage,pageSize:50},
