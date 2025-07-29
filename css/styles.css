@@ -321,11 +321,6 @@ header {
     border: 1px solid var(--border-color);
 }
 
-.content-card:hover {
-    box-shadow: 0 3px 12px rgba(93, 64, 55, 0.08);
-    background-color: rgba(255, 255, 255, 1);
-}
-
 .card-thumbnail {
     height: 160px;
     position: relative;

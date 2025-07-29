@@ -608,7 +608,7 @@ function makeNavScrollable() {
 }
 
 // 渲染故事列表
-function renderStories(append = false, keepPosition = false, bookMode = false) {
+function renderStories(append = false, keepPosition = false) {
     // 如果要保持当前滚动位置，记录位置
     const scrollPos = keepPosition ? window.scrollY : 0;
 
@@ -640,28 +640,8 @@ function renderStories(append = false, keepPosition = false, bookMode = false) {
 
     for (const story of storiesToRender) {
         if (currentState.isSimpleMode) {
-            //书本模式
-            if(bookMode){
+            // 简约模式卡片
             html += `
-                <div class="content-book-card" onclick="loadStoryDetail(${JSON.stringify(story).replace(/\"/g, "'")})">
-                    <div class="card-book-info">
-                        <div class="card-book-img">
-                            <img src="../img/白夜行.png" alt="${story.title}">
-                        </div>
-                        <div class="card-book-content">
-                        <div class="card-book-title">${story.title}</div>
-                            <div class="card-book-excerpt">${story.excerpt}</div>
-                            <div class="card-book-meta">
-                                <span><i class="fas fa-book"></i> ${story.category_name || '未分类'}</span>
-                                <span><i class="fas fa-clock"></i> ${story.created_at ? new Date(story.created_at).toLocaleDateString() : '未知时间'}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            }else{
-                // 简约模式卡片
-                html += `
                 <div class="content-card" onclick="loadStoryDetail(${JSON.stringify(story).replace(/\"/g, "'")})">
 
                     <div class="card-info">
@@ -677,7 +657,6 @@ function renderStories(append = false, keepPosition = false, bookMode = false) {
                     </div>
                 </div>
             `;
-            }
         } else {
             // 图片模式卡片 (原有样式)
             html += `
@@ -806,10 +785,10 @@ async function loadStories(append = false) {
             }
 
             //分类对象
-            const category = currentState.categories.find(c => c.id === currentState.activeCategoryId);
-            const bookModel = category.is_book == '0';
+            // const category = currentState.categories.find(c => c.id === currentState.activeCategoryId);
+            // const bookModel = category.is_book == '0';
             // 渲染故事列表
-            renderStories(append, append, bookModel);  // 在追加模式下保持滚动位置
+            renderStories(append, append);  // 在追加模式下保持滚动位置
 
             // 首次加载或分类切换后，检查是否需要加载更多内容以产生滚动条
             if (!append) {
@@ -1021,6 +1000,7 @@ function toggleTheme() {
         localStorage.setItem('theme', 'light');
     } else {
         body.classList.add('dark-theme');
+
         elements.themeToggle.innerHTML = '<i class="fas fa-sun"></i><span>切换主题</span>';
         localStorage.setItem('theme', 'dark');
     }
@@ -1378,9 +1358,9 @@ function toggleViewMode() {
 
     // 重新渲染故事列表，以应用新的视图模式
     if (currentState.stories.length > 0) {
-        const category = currentState.categories.find(c => c.id === currentState.activeCategoryId);
-        const bookModel = category.is_book == '0';
-        renderStories(false, true, bookModel);
+        // const category = currentState.categories.find(c => c.id === currentState.activeCategoryId);
+        // const bookModel = category.is_book == '0';
+        renderStories(false, true);
     }
 }
 
