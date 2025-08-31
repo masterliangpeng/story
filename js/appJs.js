@@ -258,8 +258,6 @@ async function openStoryDetail(story) {
             throw new Error('故事不存在');
         }
 
-        // 显示故事详情
-        // elements.detailTitle.textContent = story.title;
 
         // 显示故事元信息（标题和分类在同一层级）
         elements.detailMeta.innerHTML = `
@@ -321,7 +319,7 @@ function toggleTheme() {
     // 关闭设置菜单
     toggleSettingsMenu();
 
-    showToast(`已切换到${isDark ? '深色' : '浅色'}模式`, 'success');
+    // showToast(`已切换到${isDark ? '深色' : '浅色'}模式`, 'success');
 }
 
 function checkSavedTheme() {
@@ -422,7 +420,7 @@ function saveCategorySettings() {
     loadStories();
 
     closeCategorySettingsModal();
-    showToast('分类设置已保存', 'success');
+    // showToast('分类设置已保存', 'success');
 }
 
 function loadUserCategorySettings() {
