@@ -424,8 +424,6 @@ body {
 /* 悬浮设置按钮 */
 .floating-settings {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
     z-index: 9999;
 }
 
@@ -830,8 +828,8 @@ body {
     }
 
     .floating-settings {
-        bottom: 16px;
-        right: 16px;
+        bottom: 60px;
+        right: 14px;
     }
 
     .settings-fab {
