@@ -16,6 +16,33 @@
     <!-- live2d -->
     <script type="text/javascript" src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
     <link rel="stylesheet" href="../live2d/css/live2d.css"/>
+
+    <!-- 移动端检测脚本 -->
+    <script>
+        // 检测移动端设备并跳转
+        function detectMobileAndRedirect() {
+            // 检测屏幕宽度
+            const screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
+            // 检测用户代理字符串
+            const userAgent = navigator.userAgent.toLowerCase();
+            const isMobileDevice = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
+
+            // 如果屏幕宽度小于768px或检测到移动设备，则跳转到appIndex.html
+            if (screenWidth <= 768 || isMobileDevice) {
+                // 避免无限重定向，检查当前页面是否已经是appIndex.html
+                if (!window.location.pathname.includes('appIndex.html')) {
+                    window.location.href = 'appIndex.html';
+                }
+            }
+        }
+
+        // 页面加载时检测
+        detectMobileAndRedirect();
+
+        // 监听窗口大小变化
+        window.addEventListener('resize', detectMobileAndRedirect);
+    </script>
 </head>
 <body>
     <!-- 侧边栏切换按钮（在收缩状态下可见） -->

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>小故事铺</title>
+    <link rel="icon" type="image/png" href="img/story.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/appCss.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="9ff3dec1-fc8a-41cd-8de1-84e40212d86b"></script>
+    <!-- PC端检测脚本 -->
+    <script>
+        // 检测PC端设备并跳转
+        function detectDesktopAndRedirect() {
+            // 检测屏幕宽度
+            const screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
+            // 检测用户代理字符串
+            const userAgent = navigator.userAgent.toLowerCase();
+            const isMobileDevice = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
+
+            // 如果屏幕宽度大于768px且不是移动设备，则跳转到index.html
+            if (screenWidth > 768 && !isMobileDevice) {
+                // 避免无限重定向，检查当前页面是否已经是index.html
+                if (!window.location.pathname.includes('index.html') || window.location.pathname.includes('appIndex.html')) {
+                    window.location.href = 'index.html';
+                }
+            }
+        }
+
+        // 页面加载时检测
+        detectDesktopAndRedirect();
+
+        // 监听窗口大小变化
+        window.addEventListener('resize', detectDesktopAndRedirect);
+    </script>
+</head>
+<body>
+<!-- 顶部导航栏 -->
+<header class="app-header">
+    <div class="header-content">
+        <div class="logo-section">
+            <img src="img/story.png" alt="小故事铺" class="logo-img">
+            <span class="logo-text">小故事铺</span>
+        </div>
+
+    </div>
+</header>
+
+<!-- 分类导航栏 -->
+<nav class="category-nav">
+    <div class="category-scroll" id="categoryScroll">
+        <div class="category-list" id="categoryList">
+            <!-- 分类标签将通过JS动态加载 -->
+        </div>
+    </div>
+</nav>
+
+<!-- 主内容区域 -->
+<main class="main-content">
+    <!-- 故事列表 -->
+    <div class="story-list" id="storyList">
+        <!-- 故事卡片将通过JS动态加载 -->
+    </div>
+
+    <!-- 加载更多指示器 -->
+    <div class="loading-indicator" id="loadingIndicator">
+        <div class="loading-spinner"></div>
+        <span>加载中...</span>
+    </div>
+
+    <!-- 无结果提示 -->
+    <div class="no-result" id="noResult" style="display: none;">
+        <div class="no-result-icon">
+            <i class="fas fa-book-open"></i>
+        </div>
+        <h3>暂无故事</h3>
+        <p>换个分类或关键词试试吧</p>
+    </div>
+</main>
+
+<!-- 故事详情页面 -->
+<div class="story-detail" id="storyDetail" style="display: none;">
+    <div class="detail-header">
+        <button class="back-btn" id="backBtn">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1 class="detail-title" id="detailTitle"></h1>
+    </div>
+    <div class="detail-content">
+        <div class="detail-meta" id="detailMeta">
+            <!-- 故事元信息 -->
+        </div>
+        <div class="detail-text" id="detailText">
+            <!-- 故事内容 -->
+        </div>
+    </div>
+</div>
+
+<!-- 右下角悬浮设置按钮 -->
+<div class="floating-settings">
+    <div class="settings-menu" id="settingsMenu" style="display: none;">
+        <div class="settings-item" id="themeToggle">
+            <i class="fas fa-moon"></i>
+            <span>深色模式</span>
+        </div>
+        <div class="settings-item" id="categorySettings">
+            <i class="fas fa-sliders-h"></i>
+            <span>分类设置</span>
+        </div>
+
+    </div>
+    <button class="settings-fab" id="settingsFab">
+        <i class="fas fa-cog"></i>
+    </button>
+</div>
+
+<!-- 分类设置弹窗 -->
+<div class="category-settings-modal" id="categorySettingsModal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>分类设置</h3>
+            <button class="modal-close" id="categoryModalClose">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p class="settings-description">选择您想在导航栏显示的分类（最多10个）</p>
+            <div class="category-settings-list" id="categorySettingsList">
+                <!-- 分类设置项将通过JS动态加载 -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-primary" id="saveSettings">保存设置</button>
+        </div>
+    </div>
+</div>
+
+<!-- 遮罩层 -->
+<div class="overlay" id="overlay" style="display: none;"></div>
+
+<script src="js/supabase-client.js"></script>
+<script src="js/appJs.js"></script>
+</body>
+</html>
