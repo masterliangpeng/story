@@ -18,8 +18,8 @@
     --card-radius: 12px;
     --button-radius: 8px;
     --transition-time: 0.3s;
-    --header-height: 64px;
-    --category-nav-height: 56px;
+    --header-height: 45px;
+    --category-nav-height: 45px;
     --fab-size: 48px;
 }
 
@@ -101,8 +101,8 @@ body {
 }
 
 .logo-text {
-    font-size: 20px;
-    font-weight: 700;
+    font-size: 15px;
+    font-weight: 600;
     color: var(--primary-color);
     letter-spacing: 0.5px;
 }
@@ -419,7 +419,14 @@ body {
     border: 1px solid var(--border-color);
 }
 
-
+pre{
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    *word-wrap: break-word;
+    *white-space: normal;
+}
 
 /* 悬浮设置按钮 */
 .floating-settings {
