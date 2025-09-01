@@ -167,19 +167,19 @@ body {
 }
 
 .category-item.active {
-    background-color: #a9897d;
-    color: var(--text-on-primary);
-    /*border-color: var(--primary-light);*/
+    /*background-color: #a9897d;*/
+    /*color: var(--text-on-primary);*/
+    color: #8D6E63;
     transform: scale(1.02);
-    box-shadow: 0 4px 12px rgba(141, 110, 99, 0.3);
+    /*box-shadow: 0 4px 12px rgba(141, 110, 99, 0.3);*/
 }
 
 .category-item:hover:not(.active) {
-    background-color: var(--primary-light);
-    color: var(--text-on-primary);
-    border-color: var(--primary-light);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(93, 64, 55, 0.15);
+    /*background-color: var(--primary-light);*/
+    /*color: var(--text-on-primary);*/
+    /*border-color: var(--primary-light);*/
+    /*transform: translateY(-1px);*/
+    /*box-shadow: 0 4px 8px rgba(93, 64, 55, 0.15);*/
 }
 
 /* 主内容区域 */
@@ -514,7 +514,6 @@ pre{
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
@@ -522,21 +521,27 @@ pre{
     -webkit-backdrop-filter: blur(10px);
 }
 
-.settings-fab:hover {
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
-    background: linear-gradient(135deg, #FFFFFF 0%, #FAFAFA 100%);
-    color: var(--primary-color);
-    border-color: rgba(93, 64, 55, 0.2);
+.settings-fab img{
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
 }
 
-.settings-fab.active {
-    transform: rotate(135deg) scale(0.95);
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
-    color: var(--text-on-primary);
-    border-color: var(--primary-color);
-    box-shadow: 0 4px 16px rgba(93, 64, 55, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-}
+/*.settings-fab:hover {*/
+/*    transform: translateY(-2px) scale(1.05);*/
+/*    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);*/
+/*    background: linear-gradient(135deg, #FFFFFF 0%, #FAFAFA 100%);*/
+/*    color: var(--primary-color);*/
+/*    border-color: rgba(93, 64, 55, 0.2);*/
+/*}*/
+
+/*.settings-fab.active {*/
+/*    transform: rotate(135deg) scale(0.95);*/
+/*    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);*/
+/*    color: var(--text-on-primary);*/
+/*    border-color: var(--primary-color);*/
+/*    box-shadow: 0 4px 16px rgba(93, 64, 55, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);*/
+/*}*/
 
 /* 深色主题下的设置按钮和菜单样式 */
 .dark-theme .settings-menu {
@@ -576,19 +581,19 @@ pre{
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.dark-theme .settings-fab:hover {
-    background: linear-gradient(135deg, #333333 0%, #404040 100%);
-    color: var(--primary-light);
-    border-color: rgba(141, 110, 99, 0.3);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), 0 4px 8px rgba(0, 0, 0, 0.3);
-}
+/*.dark-theme .settings-fab:hover {*/
+/*    background: linear-gradient(135deg, #333333 0%, #404040 100%);*/
+/*    color: var(--primary-light);*/
+/*    border-color: rgba(141, 110, 99, 0.3);*/
+/*    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), 0 4px 8px rgba(0, 0, 0, 0.3);*/
+/*}*/
 
-.dark-theme .settings-fab.active {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
-    color: var(--text-on-primary);
-    border-color: var(--primary-color);
-    box-shadow: 0 4px 16px rgba(141, 110, 99, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
+/*.dark-theme .settings-fab.active {*/
+/*    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);*/
+/*    color: var(--text-on-primary);*/
+/*    border-color: var(--primary-color);*/
+/*    box-shadow: 0 4px 16px rgba(141, 110, 99, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);*/
+/*}*/
 
 /* 分类设置弹窗 */
 .category-settings-modal {
@@ -840,11 +845,11 @@ pre{
         right: 14px;
     }
 
-    .settings-fab {
-        width: 48px;
-        height: 48px;
-        font-size: 18px;
-    }
+    /*.settings-fab {*/
+    /*    width: 48px;*/
+    /*    height: 48px;*/
+    /*    font-size: 18px;*/
+    /*}*/
 }
 
 /* 超小屏幕优化 */
