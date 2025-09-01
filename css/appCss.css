@@ -360,7 +360,7 @@ body {
     top: 0;
     background-color: var(--surface-color);
     border-bottom: 1px solid var(--border-color);
-    padding: 16px;
+    /*padding: 16px;*/
     display: flex;
     align-items: center;
     gap: 12px;
@@ -382,6 +382,7 @@ body {
     justify-content: center;
     transition: all var(--transition-time);
     flex-shrink: 0;
+    margin-left: 14px;
 }
 
 .back-btn:hover {
