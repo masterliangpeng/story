@@ -1,4 +1,3 @@
-// App版本的JavaScript文件
 // 常量定义
 const APP_CONFIG = {
     MAX_NAV_CATEGORIES: 10,
@@ -49,6 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function initializeApp() {
+    // 显示初始加载遮罩
+    showInitialLoading();
+
     try {
         // 检查保存的主题
         checkSavedTheme();
@@ -74,6 +76,9 @@ async function initializeApp() {
     } catch (error) {
         console.error('应用初始化失败:', error);
         showToast('应用初始化失败，请刷新页面重试', 'error');
+    } finally {
+        // 隐藏初始加载遮罩
+        hideInitialLoading();
     }
 }
 
@@ -121,8 +126,6 @@ async function loadCategories() {
 
         appState.categories = data || [];
 
-        // 设置默认激活分类
-        // appState.activeCategoryId = appState.categories[0].id;
     } catch (error) {
         console.error('加载分类失败:', error);
         showToast('加载分类失败', 'error');
@@ -155,13 +158,19 @@ function renderCategories() {
 function handleCategoryClick(categoryId) {
     if (appState.activeCategoryId === categoryId) return;
 
+    // 显示加载遮罩
+    showCategoryLoading();
+
     appState.activeCategoryId = categoryId;
     appState.currentPage = 1;
     appState.stories = [];
     appState.hasMoreData = true;
 
     renderCategories();
-    loadStories();
+    loadStories().finally(() => {
+        // 隐藏加载遮罩
+        hideCategoryLoading();
+    });
 }
 
 // 加载故事
@@ -380,6 +389,10 @@ function toggleCategorySelection(categoryId) {
     const index = appState.selectedCategoryIds.indexOf(categoryId);
 
     if (index > -1) {
+        if(appState.selectedCategoryIds.length <= 1){
+            showToast(`至少需要选择一个分类`, 'warning')
+            return;
+        }
         // 移除选择
         appState.selectedCategoryIds.splice(index, 1);
     } else {
@@ -473,6 +486,204 @@ function showLoading() {
 function hideLoading() {
     if (elements.loadingIndicator) {
         elements.loadingIndicator.style.display = 'none';
+    }
+}
+
+// 显示/隐藏分类切换遮罩
+function showCategoryLoading() {
+    // 创建遮罩元素
+    const overlay = document.createElement('div');
+    overlay.id = 'category-loading-overlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(255, 255, 255, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    `;
+
+    // 创建加载内容容器
+    const loadingContent = document.createElement('div');
+    loadingContent.style.cssText = `
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+        background-color: transparent;
+        padding: 25px;
+        border-radius: 50px;
+        transform: scale(1);
+        transition: all 0.2s ease;
+        animation: pulse 1.5s infinite alternate;
+    `;
+
+    // 创建弹跳加载器
+    const bouncingLoader = document.createElement('div');
+    bouncingLoader.style.cssText = `
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 14px;
+    `;
+
+    // 创建三个弹跳球
+    const colors = ['#FF9800', '#8BC34A', '#03A9F4'];
+    const delays = ['0s', '0.15s', '0.3s'];
+
+    for (let i = 0; i < 3; i++) {
+        const ball = document.createElement('div');
+        ball.style.cssText = `
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: ${colors[i]};
+            animation: bouncing 0.5s infinite alternate;
+            animation-delay: ${delays[i]};
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        `;
+        bouncingLoader.appendChild(ball);
+    }
+
+    // 添加CSS动画到页面
+    if (!document.getElementById('category-loading-styles')) {
+        const style = document.createElement('style');
+        style.id = 'category-loading-styles';
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                100% { transform: scale(1.05); }
+            }
+            @keyframes bouncing {
+                0% { transform: translateY(0); }
+                100% { transform: translateY(-14px); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    loadingContent.appendChild(bouncingLoader);
+    overlay.appendChild(loadingContent);
+    document.body.appendChild(overlay);
+
+    // 触发淡入动画
+    setTimeout(() => {
+        overlay.style.opacity = '1';
+    }, 10);
+}
+
+function hideCategoryLoading() {
+    const overlay = document.getElementById('category-loading-overlay');
+    if (overlay) {
+        overlay.style.opacity = '0';
+        setTimeout(() => {
+            overlay.remove();
+        }, 200);
+    }
+}
+
+// 显示初始加载遮罩
+function showInitialLoading() {
+    // 创建遮罩元素
+    const overlay = document.createElement('div');
+    overlay.id = 'initial-loading-overlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(255, 255, 255, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        opacity: 1;
+        transition: opacity 0.3s ease;
+    `;
+
+    // 创建加载内容容器
+    const loadingContent = document.createElement('div');
+    loadingContent.style.cssText = `
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+        background-color: transparent;
+        padding: 25px;
+        border-radius: 50px;
+        transform: scale(1);
+        transition: all 0.2s ease;
+        animation: pulse 1.5s infinite alternate;
+    `;
+
+    // 创建弹跳加载器
+    const bouncingLoader = document.createElement('div');
+    bouncingLoader.style.cssText = `
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 14px;
+    `;
+
+    // 创建三个弹跳球
+    const colors = ['#FF9800', '#8BC34A', '#03A9F4'];
+    const delays = ['0s', '0.15s', '0.3s'];
+
+    for (let i = 0; i < 3; i++) {
+        const ball = document.createElement('div');
+        ball.style.cssText = `
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: ${colors[i]};
+            animation: bouncing 0.5s infinite alternate;
+            animation-delay: ${delays[i]};
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        `;
+        bouncingLoader.appendChild(ball);
+    }
+
+    // 添加CSS动画到页面（如果还没有添加）
+    if (!document.getElementById('initial-loading-styles')) {
+        const style = document.createElement('style');
+        style.id = 'initial-loading-styles';
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                100% { transform: scale(1.05); }
+            }
+            @keyframes bouncing {
+                0% { transform: translateY(0); }
+                100% { transform: translateY(-14px); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    loadingContent.appendChild(bouncingLoader);
+    overlay.appendChild(loadingContent);
+    document.body.appendChild(overlay);
+}
+
+// 隐藏初始加载遮罩
+function hideInitialLoading() {
+    const overlay = document.getElementById('initial-loading-overlay');
+    if (overlay) {
+        overlay.style.opacity = '0';
+        setTimeout(() => {
+            overlay.remove();
+        }, 300);
     }
 }
 
