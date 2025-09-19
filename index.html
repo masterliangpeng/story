@@ -12,7 +12,7 @@
     <!-- Supabase CDN 引用 -->
     <!-- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script defer src="https://cloud.umami.is/script.js" data-website-id="9ff3dec1-fc8a-41cd-8de1-84e40212d86b"></script>
+<!--    <script defer src="https://cloud.umami.is/script.js" data-website-id="9ff3dec1-fc8a-41cd-8de1-84e40212d86b"></script>-->
     <!-- live2d -->
     <script type="text/javascript" src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
     <link rel="stylesheet" href="../live2d/css/live2d.css"/>
@@ -66,14 +66,6 @@
 
             <!-- 功能按钮区 -->
             <div class="sidebar-actions">
-                <!-- 即时热榜按钮 -->
-                <a href="https://nowhots.com/" target="_blank" rel="noopener noreferrer" class="hot-news-button">
-                    <button class="action-button">
-                        <img src="../img/host.png" alt="即时热榜" class="hot-news-icon">
-                        <span>即时热榜</span>
-                    </button>
-                </a>
-
                 <!-- 多功能按钮 -->
                 <div class="multi-function-button" id="multiFunctionButton">
                     <button class="action-button">
@@ -105,6 +97,14 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- 即时热榜按钮 -->
+                <a href="https://nowhots.com/" target="_blank" rel="noopener noreferrer" class="hot-news-button">
+                    <button class="action-button">
+                        <img src="../img/host.png" alt="即时热榜" class="hot-news-icon">
+                        <span>即时热榜</span>
+                    </button>
+                </a>
             </div>
 
             <!-- 分类区域 -->
@@ -121,13 +121,14 @@
     <main class="main-container" id="mainContainer">
     <!-- 悬浮搜索框 -->
     <div class="floating-search" id="floatingSearch">
+<!--        <p style="position:fixed;bottom:10%;right:46%;color:#8f8f8f">支持搜索当前分类下的所有故事</p>-->
         <button class="search-close" id="searchClose">
             <i class="fas fa-times"></i>
         </button>
         <div class="floating-search-container">
             <div class="search-bar">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" id="searchInput" placeholder="按回车键搜索...">
+                <input type="text" id="searchInput" placeholder="支持搜索当前分类下的所有故事，按回车键搜索...">
             </div>
         </div>
 
@@ -212,7 +213,6 @@
                 </div>
             </div>
         </div>
-
     </div>
     </main>
 
