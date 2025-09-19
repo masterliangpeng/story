@@ -489,126 +489,32 @@ function hideLoading() {
     }
 }
 
-// 显示/隐藏分类切换遮罩
-function showCategoryLoading() {
+// 通用加载遮罩创建函数
+function createLoadingOverlay(id, config = {}) {
+    const {
+        backgroundColor = 'rgba(255, 255, 255, 0.8)',
+        blurAmount = '6px',
+        fadeInDelay = 10,
+        initialOpacity = '0'
+    } = config;
+
     // 创建遮罩元素
     const overlay = document.createElement('div');
-    overlay.id = 'category-loading-overlay';
+    overlay.id = id;
     overlay.style.cssText = `
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: rgba(255, 255, 255, 0.7);
+        background-color: ${backgroundColor};
         display: flex;
         justify-content: center;
         align-items: center;
         z-index: 10000;
-        backdrop-filter: blur(5px);
-        -webkit-backdrop-filter: blur(5px);
-        opacity: 0;
-        transition: opacity 0.2s ease;
-    `;
-
-    // 创建加载内容容器
-    const loadingContent = document.createElement('div');
-    loadingContent.style.cssText = `
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 24px;
-        background-color: transparent;
-        padding: 25px;
-        border-radius: 50px;
-        transform: scale(1);
-        transition: all 0.2s ease;
-        animation: pulse 1.5s infinite alternate;
-    `;
-
-    // 创建弹跳加载器
-    const bouncingLoader = document.createElement('div');
-    bouncingLoader.style.cssText = `
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 14px;
-    `;
-
-    // 创建三个弹跳球
-    const colors = ['#FF9800', '#8BC34A', '#03A9F4'];
-    const delays = ['0s', '0.15s', '0.3s'];
-
-    for (let i = 0; i < 3; i++) {
-        const ball = document.createElement('div');
-        ball.style.cssText = `
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background-color: ${colors[i]};
-            animation: bouncing 0.5s infinite alternate;
-            animation-delay: ${delays[i]};
-            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-        `;
-        bouncingLoader.appendChild(ball);
-    }
-
-    // 添加CSS动画到页面
-    if (!document.getElementById('category-loading-styles')) {
-        const style = document.createElement('style');
-        style.id = 'category-loading-styles';
-        style.textContent = `
-            @keyframes pulse {
-                0% { transform: scale(1); }
-                100% { transform: scale(1.05); }
-            }
-            @keyframes bouncing {
-                0% { transform: translateY(0); }
-                100% { transform: translateY(-14px); }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
-    loadingContent.appendChild(bouncingLoader);
-    overlay.appendChild(loadingContent);
-    document.body.appendChild(overlay);
-
-    // 触发淡入动画
-    setTimeout(() => {
-        overlay.style.opacity = '1';
-    }, 10);
-}
-
-function hideCategoryLoading() {
-    const overlay = document.getElementById('category-loading-overlay');
-    if (overlay) {
-        overlay.style.opacity = '0';
-        setTimeout(() => {
-            overlay.remove();
-        }, 200);
-    }
-}
-
-// 显示初始加载遮罩
-function showInitialLoading() {
-    // 创建遮罩元素
-    const overlay = document.createElement('div');
-    overlay.id = 'initial-loading-overlay';
-    overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(255, 255, 255, 0.9);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 10000;
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        opacity: 1;
+        backdrop-filter: blur(${blurAmount});
+        -webkit-backdrop-filter: blur(${blurAmount});
+        opacity: ${initialOpacity};
         transition: opacity 0.3s ease;
     `;
 
@@ -628,6 +534,27 @@ function showInitialLoading() {
     `;
 
     // 创建弹跳加载器
+    const bouncingLoader = createBouncingLoader();
+
+    // 添加CSS动画样式（如果还没有添加）
+    addLoadingStyles();
+
+    loadingContent.appendChild(bouncingLoader);
+    overlay.appendChild(loadingContent);
+    document.body.appendChild(overlay);
+
+    // 触发淡入动画
+    if (fadeInDelay > 0) {
+        setTimeout(() => {
+            overlay.style.opacity = '1';
+        }, fadeInDelay);
+    }
+
+    return overlay;
+}
+
+// 创建弹跳加载器
+function createBouncingLoader() {
     const bouncingLoader = document.createElement('div');
     bouncingLoader.style.cssText = `
         display: flex;
@@ -654,10 +581,14 @@ function showInitialLoading() {
         bouncingLoader.appendChild(ball);
     }
 
-    // 添加CSS动画到页面（如果还没有添加）
-    if (!document.getElementById('initial-loading-styles')) {
+    return bouncingLoader;
+}
+
+// 添加加载动画样式
+function addLoadingStyles() {
+    if (!document.getElementById('loading-animation-styles')) {
         const style = document.createElement('style');
-        style.id = 'initial-loading-styles';
+        style.id = 'loading-animation-styles';
         style.textContent = `
             @keyframes pulse {
                 0% { transform: scale(1); }
@@ -670,21 +601,44 @@ function showInitialLoading() {
         `;
         document.head.appendChild(style);
     }
-
-    loadingContent.appendChild(bouncingLoader);
-    overlay.appendChild(loadingContent);
-    document.body.appendChild(overlay);
 }
 
-// 隐藏初始加载遮罩
-function hideInitialLoading() {
-    const overlay = document.getElementById('initial-loading-overlay');
+// 通用隐藏遮罩函数
+function hideLoadingOverlay(id, fadeOutDuration = 300) {
+    const overlay = document.getElementById(id);
     if (overlay) {
         overlay.style.opacity = '0';
         setTimeout(() => {
             overlay.remove();
-        }, 300);
+        }, fadeOutDuration);
     }
+}
+
+// 显示/隐藏分类切换遮罩
+function showCategoryLoading() {
+    createLoadingOverlay('category-loading-overlay', {
+        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+        blurAmount: '5px',
+        fadeInDelay: 10
+    });
+}
+
+function hideCategoryLoading() {
+    hideLoadingOverlay('category-loading-overlay', 200);
+}
+
+// 显示/隐藏初始加载遮罩
+function showInitialLoading() {
+    createLoadingOverlay('initial-loading-overlay', {
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        blurAmount: '8px',
+        fadeInDelay: 0,
+        initialOpacity: '1'
+    });
+}
+
+function hideInitialLoading() {
+    hideLoadingOverlay('initial-loading-overlay', 300);
 }
 
 function showToast(message, type = 'success') {
