@@ -45,7 +45,6 @@ const elements = {
     floatingSearch: document.getElementById('floatingSearch'),
     searchClose: document.getElementById('searchClose'),
     categorySettingsButton: document.getElementById('categorySettingsButton'),
-    categorySettings: document.getElementById('categorySettings'),
     categorySettingsModal: document.getElementById('categorySettingsModal'),
     categorySettingsList: document.getElementById('categorySettingsList'),
     settingsClose: document.getElementById('settingsClose'),
@@ -112,7 +111,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 分类设置按钮点击事件
     elements.categorySettingsButton.addEventListener('click', openCategorySettingsModal);
-    elements.categorySettings.addEventListener('click', openCategorySettingsModal);
 
     elements.settingsClose.addEventListener('click', closeCategorySettingsModal);
 
@@ -1482,7 +1480,8 @@ function ttsStart() {
         ttsState.isPaused = false;
         updateTTSButton('playing');
     };
-
+    // var voices = speechSynthesis.getVoices();
+    // console.log(voices.map(v => v.voiceURI));
     // 开始播放
     window.speechSynthesis.speak(ttsState.currentUtterance);
 }
