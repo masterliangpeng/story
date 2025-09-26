@@ -12,10 +12,9 @@
 
 💬 易用界面<br>
 “小故事铺”拥有简洁直观的用户界面，家长可以快速浏览、选择和阅读故事。每个故事都附有字数标注，便于家长挑选适合孩子的长度。<br>
-
-<img width="1910" height="925" alt="eea8bca58d89e488f9d161dcb84ea900" src="https://github.com/user-attachments/assets/bbb473bc-d8a0-4507-8e7d-0eed2877025f" />
-<img width="1910" height="925" alt="99f460b294447ddc46c6007544aac085" src="https://github.com/user-attachments/assets/3f048619-c0b7-4230-b10c-14375365a6f5" />
 🎉 家庭共享
 “小故事铺”不仅是孩子们的故事乐园，也为家长提供了与孩子一同成长的机会，享受温馨、愉快的亲子时光。
+<img width="1910" height="925" alt="eea8bca58d89e488f9d161dcb84ea900" src="https://github.com/user-attachments/assets/bbb473bc-d8a0-4507-8e7d-0eed2877025f" />
+<img width="1910" height="925" alt="99f460b294447ddc46c6007544aac085" src="https://github.com/user-attachments/assets/3f048619-c0b7-4230-b10c-14375365a6f5" />
 <img width="1910" height="925" alt="0a4de6175a2d8ba9977b25a87ed821ca" src="https://github.com/user-attachments/assets/bbca5961-b580-4e9c-b22e-b300ee27b176" />
 <img width="1910" height="925" alt="f6c8d2fa1de24b389dd877513e2b740e" src="https://github.com/user-attachments/assets/76911536-a632-4503-80e1-9bdb27c04bca" />
