@@ -1444,7 +1444,7 @@ function ttsStart() {
 
     // 设置语音参数
     ttsState.currentUtterance.lang = 'zh-CN'; // 中文
-    ttsState.currentUtterance.rate = 0.9; // 语速
+    ttsState.currentUtterance.rate = 1; // 语速
     ttsState.currentUtterance.pitch = 1; // 音调
     ttsState.currentUtterance.volume = 1; // 音量
 
