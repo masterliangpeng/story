@@ -5,6 +5,35 @@
     <link rel="icon" type="image/png" href="../img/story.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>小故事铺</title>
+
+    <!-- SEO优化meta标签 -->
+    <meta name="description" content="小故事铺是专业的故事阅读平台，提供睡前故事、儿童故事、历史故事、恐怖故事、爱情故事、励志故事等各类精彩小故事。免费在线阅读，每日更新优质故事内容。">
+    <meta name="keywords" content="故事,小故事,故事平台,睡前故事,儿童故事,历史故事,恐怖故事,爱情故事,励志故事,故事大全,在线阅读,免费故事,故事网站,短篇故事,经典故事,温馨故事,感人故事">
+    <meta name="author" content="小故事铺">
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="bingbot" content="index,follow">
+
+    <!-- Open Graph标签 -->
+    <meta property="og:title" content="小故事铺 - 各类精彩故事在线阅读平台">
+    <meta property="og:description" content="汇集睡前故事、儿童故事、历史故事、恐怖故事等各类精彩小故事，免费在线阅读，每日更新">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourdomain.com">
+    <meta property="og:image" content="../img/story.png">
+    <meta property="og:site_name" content="小故事铺">
+    <meta property="og:locale" content="zh_CN">
+
+    <!-- Twitter Card标签 -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="小故事铺 - 各类精彩故事在线阅读平台">
+    <meta name="twitter:description" content="汇集睡前故事、儿童故事、历史故事、恐怖故事等各类精彩小故事">
+    <meta name="twitter:image" content="../img/story.png">
+
+    <!-- 其他SEO标签 -->
+    <meta name="theme-color" content="#4A90E2">
+    <meta name="msapplication-TileColor" content="#4A90E2">
+    <meta name="application-name" content="小故事铺">
+    <link rel="canonical" href="https://storynook.cn">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -45,6 +74,27 @@
     </script>
 </head>
 <body>
+    <!-- SEO隐藏内容区域 - 供搜索引擎抓取 -->
+    <div style="position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px; overflow: hidden;" aria-hidden="true">
+        <h1>小故事铺 - 最全的故事阅读平台</h1>
+        <p>小故事铺汇集了各种类型的精彩故事，包括睡前故事、儿童故事、历史故事、恐怖故事、爱情故事、励志故事、神话故事、寓言故事、童话故事、民间故事、科幻故事、悬疑故事、温馨故事、感人故事等。我们致力于为读者提供优质的故事内容，让每个人都能在这里找到属于自己的故事。</p>
+        <p>无论您是想要为孩子寻找有趣的儿童故事，还是想在睡前听一些温馨的睡前故事，或者对历史故事、恐怖故事感兴趣，小故事铺都能满足您的需求。我们的故事平台每日更新，为您带来最新最好的故事内容。</p>
+        <p>故事分类包括：睡前故事大全、儿童故事集、历史故事精选、恐怖故事合集、爱情故事专区、励志故事频道、经典故事回顾、短篇故事精华、长篇故事连载、原创故事投稿等。</p>
+        <p>小故事铺是您身边的故事专家，为您提供免费的在线故事阅读服务。无论何时何地，只要您想听故事、读故事，小故事铺都在这里等您。</p>
+        <ul>
+            <li>睡前故事 - 温馨治愈的睡前小故事</li>
+            <li>儿童故事 - 适合孩子的有趣故事</li>
+            <li>历史故事 - 了解历史的精彩故事</li>
+            <li>恐怖故事 - 惊险刺激的恐怖小说</li>
+            <li>爱情故事 - 浪漫感人的爱情小说</li>
+            <li>励志故事 - 激励人心的正能量故事</li>
+            <li>神话故事 - 古代神话传说故事</li>
+            <li>寓言故事 - 富含哲理的寓言故事</li>
+            <li>童话故事 - 经典童话故事大全</li>
+            <li>民间故事 - 传统民间故事集</li>
+        </ul>
+    </div>
+
     <!-- 侧边栏切换按钮（在收缩状态下可见） -->
     <div class="sidebar-toggle" id="sidebarToggle">
         <i class="fas fa-chevron-right"></i>
@@ -244,6 +294,81 @@
 
     <script src="../js/supabase-client.js"></script>
     <script src="../js/app.js"></script>
+
+    <!-- 结构化数据标记 -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "小故事铺",
+        "alternateName": "故事阅读平台",
+        "url": "https://storynook.cn",
+        "description": "小故事铺是专业的故事阅读平台，提供睡前故事、儿童故事、历史故事、恐怖故事、爱情故事、励志故事等各类精彩小故事",
+        "keywords": "小故事,故事平台,睡前故事,儿童故事,历史故事,恐怖故事,爱情故事,励志故事",
+        "inLanguage": "zh-CN",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://storynook.cn/#search={search_term_string}",
+            "query-input": "required name=search_term_string"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "小故事铺",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://storynook.cn/img/story.png"
+            }
+        },
+        "mainEntity": {
+            "@type": "ItemList",
+            "name": "故事分类",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "睡前故事",
+                    "description": "温馨治愈的睡前小故事，帮助您安然入睡"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "儿童故事",
+                    "description": "适合孩子阅读的有趣故事，寓教于乐"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 3,
+                    "name": "历史故事",
+                    "description": "了解历史的精彩故事，增长知识"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 4,
+                    "name": "恐怖故事",
+                    "description": "惊险刺激的恐怖小说，挑战胆量"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 5,
+                    "name": "爱情故事",
+                    "description": "浪漫感人的爱情小说，触动心灵"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 6,
+                    "name": "励志故事",
+                    "description": "激励人心的正能量故事，传递力量"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 7,
+                    "name": "规则怪谈",
+                    "description": "规则怪谈，鬼怪传说"
+                }
+            ]
+        }
+    }
+    </script>
 
     <script type="text/javascript" src="../live2d/js/live2d.js"></script>
     <script type="text/javascript" src="../live2d/js/message.js"></script>
