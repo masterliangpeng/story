@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="img/story.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新增故事 - 小故事铺</title>
+
+    <!-- 引入现有样式 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+    <style>
+        .form-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background: var(--surface-color);
+            border-radius: var(--card-radius);
+            box-shadow: var(--card-shadow);
+            transition: var(--transition-time);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .form-header h1 {
+            color: var(--primary-color);
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .form-header p {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .form-label .required {
+            color: #e74c3c;
+            margin-left: 4px;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            color: var(--text-primary);
+            background-color: var(--surface-color);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(93, 64, 55, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 200px;
+            resize: vertical;
+            font-family: inherit;
+            line-height: 1.6;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: var(--button-radius);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--text-on-primary);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .btn-secondary {
+            background-color: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--text-hint);
+            transform: translateY(-2px);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--primary-dark);
+        }
+
+        .character-count {
+            text-align: right;
+            font-size: 14px;
+            color: var(--text-hint);
+            margin-top: 5px;
+        }
+
+        .form-help {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .form-container {
+                margin: 20px;
+                padding: 20px;
+            }
+
+            .form-header h1 {
+                font-size: 24px;
+            }
+
+            .form-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* 暗色主题适配 */
+        .dark-theme .form-input,
+        .dark-theme .form-select,
+        .dark-theme .form-textarea {
+            background-color: var(--surface-color);
+            border-color: var(--border-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            返回首页
+        </a>
+
+        <div class="form-container">
+            <div class="form-header">
+                <h1><i class="fas fa-plus-circle"></i> 新增故事</h1>
+                <p>分享您的精彩故事，让更多人感受文字的魅力</p>
+            </div>
+
+            <form id="storyForm">
+                <div class="form-group">
+                    <label for="storyCategory" class="form-label">
+                        故事分类<span class="required">*</span>
+                    </label>
+                    <select id="storyCategory" name="category" class="form-select" required>
+                        <option value="">请选择故事分类</option>
+                        <option value="1">睡前故事</option>
+                        <option value="2">儿童故事</option>
+                        <option value="3">格林童话</option>
+                        <option value="4">民间故事</option>
+                        <option value="5">益智故事</option>
+                        <option value="6">历史故事</option>
+                        <option value="7">寓言故事</option>
+                        <option value="8">经典童话</option>
+                        <option value="9">成语故事</option>
+                        <option value="10">童话作文</option>
+                        <option value="11">恐怖故事</option>
+                        <option value="12">知乎故事</option>
+                        <option value="13" selected>聊斋志异</option>
+                        <option value="14">规则怪谈</option>
+                        <option value="15">推理小说</option>
+<!--                        <option value="悬疑故事">悬疑故事</option>-->
+<!--                        <option value="励志故事">励志故事</option>-->
+<!--                        <option value="神话故事">神话故事</option>-->
+                    </select>
+                    <div class="form-help">选择最符合您故事内容的分类</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="storyTitle" class="form-label">
+                        故事标题<span class="required">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="storyTitle"
+                        name="title"
+                        class="form-input"
+                        placeholder="请输入故事标题"
+                        maxlength="100"
+                        required
+                    >
+                    <div class="character-count">
+                        <span id="titleCount">0</span>/100
+                    </div>
+                    <div class="form-help">一个好的标题能吸引更多读者</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="storyContent" class="form-label">
+                        故事内容<span class="required">*</span>
+                    </label>
+                    <textarea
+                        id="storyContent"
+                        name="content"
+                        class="form-textarea"
+                        placeholder="请输入故事内容...&#10;&#10;您可以在这里尽情发挥想象力，讲述一个精彩的故事。无论是温馨的睡前故事，还是惊险的冒险故事，都欢迎您的分享。"
+                        maxlength="10000"
+                        required
+                    ></textarea>
+                    <div class="character-count">
+                        <span id="contentCount">0</span>/10000
+                    </div>
+                    <div class="form-help">建议故事长度大于500字，这样既能完整表达故事，又便于阅读</div>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        保存故事
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                        <i class="fas fa-undo"></i>
+                        重置表单
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/add.js"></script>
+</body>
+</html>

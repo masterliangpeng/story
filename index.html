@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link rel="icon" type="image/png" href="../img/story.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>小故事铺</title>
+    <title>小故事铺是一个专注于原创短篇故事的平台，涵盖睡前、恐怖、亲情、儿童等多个类型。每天更新精彩故事，陪你度过温暖或惊悚的时刻</title>
 
     <!-- SEO优化meta标签 -->
     <meta name="description" content="小故事铺是专业的故事阅读平台，提供睡前故事、儿童故事、历史故事、恐怖故事、爱情故事、励志故事等各类精彩小故事。免费在线阅读，每日更新优质故事内容。">
@@ -34,6 +34,8 @@
     <meta name="msapplication-TileColor" content="#4A90E2">
     <meta name="application-name" content="小故事铺">
     <link rel="canonical" href="https://storynook.cn">
+    <!-- SEO标签end -->
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -41,7 +43,7 @@
     <!-- Supabase CDN 引用 -->
     <!-- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-     <script defer src="https://cloud.umami.is/script.js" data-website-id="9ff3dec1-fc8a-41cd-8de1-84e40212d86b"></script>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="9ff3dec1-fc8a-41cd-8de1-84e40212d86b"></script>
     <!-- live2d -->
     <script type="text/javascript" src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
     <link rel="stylesheet" href="../live2d/css/live2d.css"/>
@@ -57,11 +59,11 @@
             const userAgent = navigator.userAgent.toLowerCase();
             const isMobileDevice = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
 
-            // 如果屏幕宽度小于768px或检测到移动设备，则跳转到appIndex.html
+            // 如果屏幕宽度小于768px或检测到移动设备，则跳转到app.html
             if (screenWidth <= 768 || isMobileDevice) {
-                // 避免无限重定向，检查当前页面是否已经是appIndex.html
-                if (!window.location.pathname.includes('appIndex.html')) {
-                    window.location.href = 'appIndex.html';
+                // 避免无限重定向，检查当前页面是否已经是app.html
+                if (!window.location.pathname.includes('app.html')) {
+                    window.location.href = 'app.html';
                 }
             }
         }
@@ -240,7 +242,7 @@
                     <span>返回</span>
                 </button>
 
-                <h1 class="article-title" id="storyTitle"></h1>
+                <h2 class="article-title" id="storyTitle"></h2>
 
                 <div class="article-meta">
                     <div class="article-account">

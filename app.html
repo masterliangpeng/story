@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>小故事铺</title>
+    <title>小故事铺 - 各类精彩故事在线阅读平台</title>
     <link rel="icon" type="image/png" href="img/story.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,7 +25,7 @@
             // 如果屏幕宽度大于768px且不是移动设备，则跳转到index.html
             if (screenWidth > 768 && !isMobileDevice) {
                 // 避免无限重定向，检查当前页面是否已经是index.html
-                if (!window.location.pathname.includes('index.html') || window.location.pathname.includes('appIndex.html')) {
+                if (!window.location.pathname.includes('index.html') || window.location.pathname.includes('app.html')) {
                     window.location.href = 'index.html';
                 }
             }
