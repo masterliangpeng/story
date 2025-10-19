@@ -5,14 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>小故事铺 - 各类精彩故事在线阅读平台</title>
     <link rel="icon" type="image/png" href="img/story.png">
-<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">-->
     <link rel="stylesheet" href="css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/appCss.css">
-<!--    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>-->
     <script src="../js/supabase.js"></script>
-<!--    <script defer src="https://cloud.umami.is/script.js" data-website-id="9ff3dec1-fc8a-41cd-8de1-84e40212d86b"></script>-->
     <!-- PC端检测脚本 -->
     <script>
         // 检测PC端设备并跳转
@@ -48,7 +45,10 @@
             <img src="img/story.png" alt="小故事铺" class="logo-img">
             <span class="logo-text">小故事铺</span>
         </div>
-        <div><i class="fas fa-sliders-h"></i></div>
+        <div class="header-actions">
+            <div class="menu-icon" id="themeToggle"><i class="fas fa-sun"></i></div>
+            <div class="menu-icon" id="categorySettings"><i class="fas fa-sliders-h"></i></div>
+        </div>
     </div>
 </header>
 
@@ -56,7 +56,7 @@
 <nav class="category-nav">
     <div class="category-list" id="categoryList">
             <!-- 分类标签将通过JS动态加载 -->
-        </div>
+    </div>
 </nav>
 
 <!-- 主内容区域 -->
@@ -100,24 +100,6 @@
     </div>
 </div>
 
-<!-- 右下角悬浮设置按钮 -->
-<div class="floating-settings">
-    <div class="settings-menu" id="settingsMenu" style="display: none;">
-        <div class="settings-item" id="themeToggle">
-            <i class="fas fa-moon"></i>
-            <span>深色模式</span>
-        </div>
-        <div class="settings-item" id="categorySettings">
-            <i class="fas fa-sliders-h"></i>
-            <span>分类设置</span>
-        </div>
-    </div>
-
-    <div class="settings-fab" id="settingsFab">
-        <img src="../img/menu.png" alt="菜单">
-    </div>
-</div>
-
 <!-- 分类设置弹窗 -->
 <div class="category-settings-modal" id="categorySettingsModal" style="display: none;">
     <div class="modal-content">
@@ -128,13 +110,10 @@
             </button>
         </div>
         <div class="modal-body">
-            <p class="settings-description">选择您想在导航栏显示的分类（最多10个）</p>
+            <p class="settings-description">选择您想在导航栏显示的分类（最多5个）</p>
             <div class="category-settings-list" id="categorySettingsList">
                 <!-- 分类设置项将通过JS动态加载 -->
             </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn-primary" id="saveSettings">保存设置</button>
         </div>
     </div>
 </div>

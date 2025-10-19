@@ -1,6 +1,6 @@
 // 常量定义
 const APP_CONFIG = {
-    MAX_NAV_CATEGORIES: 10,
+    MAX_NAV_CATEGORIES: 5,
     LOCAL_STORAGE_KEY: 'app_story_categories_setting',
     THEME_KEY: 'app_story_theme',
     STORIES_PER_PAGE: 20,
@@ -30,15 +30,12 @@ const elements = {
     detailMeta: document.getElementById('detailMeta'),
     detailText: document.getElementById('detailText'),
     backBtn: document.getElementById('backBtn'),
-    settingsFab: document.getElementById('settingsFab'),
-    settingsMenu: document.getElementById('settingsMenu'),
     themeToggle: document.getElementById('themeToggle'),
     categorySettings: document.getElementById('categorySettings'),
 
     categorySettingsModal: document.getElementById('categorySettingsModal'),
     categorySettingsList: document.getElementById('categorySettingsList'),
     categoryModalClose: document.getElementById('categoryModalClose'),
-    saveSettings: document.getElementById('saveSettings'),
     overlay: document.getElementById('overlay')
 };
 
@@ -82,28 +79,19 @@ async function initializeApp() {
     }
 }
 
-// 绑定事件
 function bindEvents() {
-    // 搜索相关
-
-
     // 故事详情
     elements.backBtn?.addEventListener('click', closeStoryDetail);
 
     // 设置相关
-    elements.settingsFab?.addEventListener('click', toggleSettingsMenu);
     elements.themeToggle?.addEventListener('click', toggleTheme);
     elements.categorySettings?.addEventListener('click', openCategorySettingsModal);
 
-
     // 分类设置弹窗
     elements.categoryModalClose?.addEventListener('click', closeCategorySettingsModal);
-    elements.saveSettings?.addEventListener('click', saveCategorySettings);
 
     // 遮罩层
     elements.overlay?.addEventListener('click', closeAllModals);
-
-
 
     // 分类设置弹窗点击外部关闭
     elements.categorySettingsModal?.addEventListener('click', (e) => {
@@ -123,11 +111,8 @@ async function loadCategories() {
         const { data, error } = await window.supabaseClient.fetchData('story_category', options);
 
         if (error) throw error;
-        const newData = new Array(5);
-        for (var i = 0;i<5;i++){
-            newData[i] = data[i];
-        }
-        appState.categories = newData || [];
+        
+        appState.categories = data || [];
 
     } catch (error) {
         console.error('加载分类失败:', error);
@@ -303,17 +288,6 @@ function closeStoryDetail() {
 
 
 // 设置相关功能
-function toggleSettingsMenu() {
-    const isVisible = elements.settingsMenu.style.display === 'block';
-
-    if (isVisible) {
-        elements.settingsMenu.style.display = 'none';
-        elements.settingsFab.classList.remove('active');
-    } else {
-        elements.settingsMenu.style.display = 'block';
-        elements.settingsFab.classList.add('active');
-    }
-}
 
 function toggleTheme() {
     document.body.classList.toggle('dark-theme');
@@ -322,16 +296,7 @@ function toggleTheme() {
 
     // 更新图标
     const icon = elements.themeToggle.querySelector('i');
-    icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-
-    // 更新文本
-    const text = elements.themeToggle.querySelector('span');
-    text.textContent = isDark ? '浅色模式' : '深色模式';
-
-    // 关闭设置菜单
-    toggleSettingsMenu();
-
-    // showToast(`已切换到${isDark ? '深色' : '浅色'}模式`, 'success');
+    icon.className = isDark ? 'fas fa-moon': 'fas fa-sun';
 }
 
 function checkSavedTheme() {
@@ -361,7 +326,6 @@ function openCategorySettingsModal() {
     populateCategorySettings();
     elements.categorySettingsModal.style.display = 'flex';
     elements.overlay.style.display = 'block';
-    toggleSettingsMenu();
 }
 
 function closeCategorySettingsModal() {
@@ -409,9 +373,8 @@ function toggleCategorySelection(categoryId) {
 
     // 重新渲染设置列表
     populateCategorySettings();
-}
-
-function saveCategorySettings() {
+    
+    // 实时保存设置到本地存储
     localStorage.setItem(APP_CONFIG.LOCAL_STORAGE_KEY, JSON.stringify(appState.selectedCategoryIds));
 
     // 检查当前激活的分类是否还在选中的分类列表中
@@ -434,9 +397,6 @@ function saveCategorySettings() {
     appState.stories = [];
     appState.hasMoreData = true;
     loadStories();
-
-    closeCategorySettingsModal();
-    // showToast('分类设置已保存', 'success');
 }
 
 function loadUserCategorySettings() {
@@ -454,8 +414,6 @@ function loadUserCategorySettings() {
 // 关闭所有弹窗
 function closeAllModals() {
     closeCategorySettingsModal();
-    elements.settingsMenu.style.display = 'none';
-    elements.settingsFab.classList.remove('active');
 }
 
 // 无限滚动
