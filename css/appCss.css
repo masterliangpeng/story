@@ -402,7 +402,7 @@ body {
 .back-btn {
     width: 40px;
     height: 40px;
-    border-radius: 50%;
+    /*border-radius: 50%;*/
     background-color: transparent;
     border: none;
     color: var(--text-secondary);
@@ -412,7 +412,8 @@ body {
     justify-content: center;
     transition: all var(--transition-time);
     flex-shrink: 0;
-    margin-left: 14px;
+    margin-left: 25px;
+    font-size: 15px;
 }
 
 .back-btn:hover {
