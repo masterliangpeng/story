@@ -137,7 +137,7 @@ body {
 }
 
 .menu-icon i {
-    font-size: 14px;
+    font-size: 18px;
 }
 
 
@@ -229,7 +229,7 @@ body {
     padding: 16px;
     cursor: pointer;
     transition: all var(--transition-time);
-    /*box-shadow: var(--card-shadow);*/
+    box-shadow: var(--card-shadow);
 }
 
 .story-card:hover {
