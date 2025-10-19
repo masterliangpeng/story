@@ -681,7 +681,7 @@ pre{
     width: 36px;
     height: 36px;
     border-radius: 18px;
-    background-color: var(--background-color);
+    background-color: var(--surface-color);
     border: none;
     color: var(--text-secondary);
     cursor: pointer;
@@ -689,7 +689,6 @@ pre{
     align-items: center;
     justify-content: center;
     transition: all var(--transition-time);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .modal-close:hover {

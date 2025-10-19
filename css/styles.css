@@ -318,7 +318,6 @@ header {
     position: relative;
     display: flex;
     flex-direction: column;
-    border: 1px solid var(--border-color);
 }
 
 .card-thumbnail {
@@ -1983,7 +1982,6 @@ input:focus, select:focus, button:focus {
     background-color: var(--background-color);
     transition: all 0.25s ease;
     position: relative;
-    border: 1px solid var(--border-color);
 }
 
 .category-item.selected {
@@ -2505,7 +2503,6 @@ body.simple-mode .card-category {
     overflow-y: auto;
     overflow-x: hidden;
     transition: transform 0.3s ease, width 0.3s ease;
-    border-right: 1px solid var(--border-color);
 }
 
 .sidebar-inner {
