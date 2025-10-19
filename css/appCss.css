@@ -887,6 +887,12 @@ pre{
     -webkit-backdrop-filter: blur(4px);
 }
 
+/* 禁用页面滚动的样式 */
+.no-scroll {
+    overflow: hidden;
+    height: 100vh;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
     .category-list {

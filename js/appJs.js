@@ -326,11 +326,17 @@ function openCategorySettingsModal() {
     populateCategorySettings();
     elements.categorySettingsModal.style.display = 'flex';
     elements.overlay.style.display = 'block';
+    
+    // 禁用背景滚动
+    document.body.classList.add('modal-open');
 }
 
 function closeCategorySettingsModal() {
     elements.categorySettingsModal.style.display = 'none';
     elements.overlay.style.display = 'none';
+    
+    // 恢复背景滚动
+    document.body.classList.remove('modal-open');
 }
 
 function populateCategorySettings() {
