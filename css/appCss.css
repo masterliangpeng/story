@@ -50,7 +50,9 @@
 }
 
 body {
-    background-color: var(--background-color);
+    /*background-color: var(--background-color);*/
+    background: linear-gradient(90deg, #f7f1de, #fbe5e2);
+
     color: var(--text-primary);
     transition: background-color var(--transition-time), color var(--transition-time);
     overflow-x: hidden;
@@ -70,8 +72,9 @@ body {
     left: 0;
     right: 0;
     height: var(--header-height);
-    background-color: var(--surface-color);
-    border-bottom: 1px solid var(--border-color);
+    /*background-color: var(--surface-color);*/
+    /*border-bottom: 1px solid var(--border-color);*/
+    background: linear-gradient(90deg, #f7f1de, #fbe5e2);
     z-index: 1000;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -97,7 +100,7 @@ body {
     height: 36px;
     border-radius: 8px;
     object-fit: cover;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    /*box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);*/
 }
 
 .logo-text {
@@ -122,20 +125,21 @@ body {
     left: 0;
     right: 0;
     height: var(--category-nav-height);
-    background-color: var(--surface-color);
-    border-bottom: 1px solid var(--border-color);
+    /*background-color: var(--surface-color);*/
+    /*border-bottom: 1px solid var(--border-color);*/
+    background: linear-gradient(90deg, #f7f1de, #fbe5e2);
     z-index: 999;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
 }
 
-.category-scroll {
-    height: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
+/*.category-scroll {*/
+/*    height: 100%;*/
+/*    overflow-x: auto;*/
+/*    overflow-y: hidden;*/
+/*    scrollbar-width: none;*/
+/*    -ms-overflow-style: none;*/
+/*}*/
 
 .category-scroll::-webkit-scrollbar {
     display: none;
@@ -154,16 +158,16 @@ body {
 .category-item {
     flex-shrink: 0;
     padding: 10px 20px;
-    border-radius: 24px;
-    background-color: var(--background-color);
+    /*border-radius: 24px;*/
+    /*background-color: var(--background-color);*/
     color: var(--text-secondary);
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
     transition: all var(--transition-time);
-    border: 1px solid var(--border-color);
+    /*border: 1px solid var(--border-color);*/
     white-space: nowrap;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    /*box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);*/
 }
 
 .category-item.active {
@@ -171,7 +175,22 @@ body {
     /*color: var(--text-on-primary);*/
     color: #8D6E63;
     transform: scale(1.02);
+    font-size: 16px;
     /*box-shadow: 0 4px 12px rgba(141, 110, 99, 0.3);*/
+    position: relative;
+}
+
+.category-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50%;
+    height: 2px;
+    background: linear-gradient(90deg, #8D6E63, #A1887F);
+    border-radius: 2px;
+    animation: underlineSlide 0.3s ease-out;
 }
 
 .category-item:hover:not(.active) {
@@ -296,6 +315,17 @@ body {
     border-top: 3px solid var(--primary-color);
     border-radius: 50%;
     animation: spin 1s linear infinite;
+}
+
+@keyframes underlineSlide {
+    0% {
+        width: 0%;
+        opacity: 0;
+    }
+    100% {
+        width: 50%;
+        opacity: 1;
+    }
 }
 
 @keyframes spin {
@@ -854,7 +884,7 @@ pre{
     .category-item {
         padding: 8px 16px;
         font-size: 13px;
-        border-radius: 20px;
+        /*border-radius: 20px;*/
     }
 
     /* 分类设置弹窗移动端优化 */
@@ -941,14 +971,14 @@ pre{
     }
 
     .category-list {
-        padding: 4px 12px;
-        gap: 8px;
+        padding: 4px 5px;
+        gap: 2px;
     }
 
     .category-item {
         padding: 6px 12px;
         font-size: 12px;
-        border-radius: 18px;
+        /*border-radius: 18px;*/
     }
 
     .main-content {
@@ -983,7 +1013,7 @@ pre{
     .category-item {
         padding: 5px 10px;
         font-size: 11px;
-        border-radius: 16px;
+        /*border-radius: 16px;*/
     }
 
     .header-content {

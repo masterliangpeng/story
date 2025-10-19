@@ -123,8 +123,11 @@ async function loadCategories() {
         const { data, error } = await window.supabaseClient.fetchData('story_category', options);
 
         if (error) throw error;
-
-        appState.categories = data || [];
+        const newData = new Array(5);
+        for (var i = 0;i<5;i++){
+            newData[i] = data[i];
+        }
+        appState.categories = newData || [];
 
     } catch (error) {
         console.error('加载分类失败:', error);
