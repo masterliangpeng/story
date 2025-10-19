@@ -155,14 +155,6 @@ body {
     -webkit-backdrop-filter: blur(10px);
 }
 
-/*.category-scroll {*/
-/*    height: 100%;*/
-/*    overflow-x: auto;*/
-/*    overflow-y: hidden;*/
-/*    scrollbar-width: none;*/
-/*    -ms-overflow-style: none;*/
-/*}*/
-
 .category-scroll::-webkit-scrollbar {
     display: none;
 }
@@ -189,7 +181,7 @@ body {
 }
 
 .category-item.active {
-    font-size: 14px;
+    font-size: 16px;
     color: #917242;
     transform: translateY(-1px);
     position: relative;
@@ -399,8 +391,6 @@ body {
     position: sticky;
     top: 0;
     background-color: var(--surface-color);
-    border-bottom: 1px solid var(--border-color);
-    /*padding: 16px;*/
     display: flex;
     align-items: center;
     gap: 12px;
@@ -447,7 +437,6 @@ body {
     padding: 13px;
     background-color: var(--surface-color);
     border-radius: var(--card-radius);
-    border: 1px solid var(--border-color);
 }
 
 .detail-text {
@@ -457,7 +446,6 @@ body {
     background-color: var(--surface-color);
     padding: 20px;
     border-radius: var(--card-radius);
-    border: 1px solid var(--border-color);
 }
 
 pre{
@@ -886,10 +874,12 @@ pre{
     -webkit-backdrop-filter: blur(4px);
 }
 
-/* 禁用页面滚动的样式 */
+/* 禁用body滚动 */
 .no-scroll {
-    overflow: hidden;
-    height: 100vh;
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100% !important;
 }
 
 /* 响应式设计 */

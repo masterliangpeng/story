@@ -323,20 +323,20 @@ function openCategorySettingsModal() {
         appState.selectedCategoryIds = appState.categories.slice(0, APP_CONFIG.MAX_NAV_CATEGORIES).map(cat => cat.id);
     }
 
+    // 禁用body滚动
+    document.body.classList.add('no-scroll');
+
     populateCategorySettings();
     elements.categorySettingsModal.style.display = 'flex';
     elements.overlay.style.display = 'block';
-    
-    // 禁用背景滚动
-    document.body.classList.add('modal-open');
 }
 
 function closeCategorySettingsModal() {
+    // 恢复body滚动
+    document.body.classList.remove('no-scroll');
+    
     elements.categorySettingsModal.style.display = 'none';
     elements.overlay.style.display = 'none';
-    
-    // 恢复背景滚动
-    document.body.classList.remove('modal-open');
 }
 
 function populateCategorySettings() {
@@ -419,6 +419,9 @@ function loadUserCategorySettings() {
 
 // 关闭所有弹窗
 function closeAllModals() {
+    // 恢复body滚动
+    document.body.classList.remove('no-scroll');
+    
     closeCategorySettingsModal();
 }
 
