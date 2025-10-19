@@ -227,10 +227,9 @@ body {
     background-color: var(--surface-color);
     border-radius: var(--card-radius);
     padding: 16px;
-    border: 1px solid var(--border-color);
     cursor: pointer;
     transition: all var(--transition-time);
-    box-shadow: var(--card-shadow);
+    /*box-shadow: var(--card-shadow);*/
 }
 
 .story-card:hover {
