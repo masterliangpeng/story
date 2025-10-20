@@ -32,7 +32,6 @@ const elements = {
     loadingOverlay: document.getElementById('loadingOverlay'),
     storyTitle: document.getElementById('storyTitle'),
     storyType: document.getElementById('storyType'),
-    storyReadTime: document.getElementById('storyReadTime'),
     storyContent: document.getElementById('storyContent'),
     homeView: document.querySelector('.home-view'),
     articleView: document.querySelector('.article-view'),

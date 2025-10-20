@@ -6,12 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>新增故事 - 小故事铺</title>
 
-    <!-- 引入现有样式 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<!--    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">-->
     <link rel="stylesheet" href="css/styles.css">
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase.js"></script>
 
     <style>
         .form-container {
@@ -258,11 +257,11 @@
                         name="content"
                         class="form-textarea"
                         placeholder="请输入故事内容...&#10;&#10;您可以在这里尽情发挥想象力，讲述一个精彩的故事。无论是温馨的睡前故事，还是惊险的冒险故事，都欢迎您的分享。"
-                        maxlength="10000"
+                        maxlength="20000"
                         required
                     ></textarea>
                     <div class="character-count">
-                        <span id="contentCount">0</span>/10000
+                        <span id="contentCount">0</span>/20000
                     </div>
                     <div class="form-help">建议故事长度大于500字，这样既能完整表达故事，又便于阅读</div>
                 </div>

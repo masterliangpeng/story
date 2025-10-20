@@ -36,19 +36,13 @@
     <link rel="canonical" href="https://storynook.cn">
     <!-- SEO标签end -->
 
-<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">-->
     <link rel="stylesheet" href="css/all.min.css">
-<!--    <link rel="preconnect" href="https://fonts.googleapis.com">-->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css">
-    <!-- Supabase CDN 引用 -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> -->
-<!--    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>-->
-    <script src="../js/supabase.js"></script>
-    <script defer src="https://cloud.umami.is/script.js" data-website-id="9ff3dec1-fc8a-41cd-8de1-84e40212d86b"></script>
-    <!-- live2d -->
-    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
     <link rel="stylesheet" href="../live2d/css/live2d.css"/>
+
+    <script src="../js/supabase.js"></script>
+    <script src="../js/jquery.min.js"></script>
 
     <!-- 移动端检测脚本 -->
     <script>
@@ -129,18 +123,10 @@
                     </button>
                     <!-- 功能下拉菜单 -->
                     <div class="function-dropdown" id="functionDropdown">
-<!--                        <div class="function-item" id="searchButton">-->
-<!--                            <i class="fas fa-search"></i>-->
-<!--                            <span>故事搜索</span>-->
-<!--                        </div>-->
                         <div class="function-item" id="viewModeToggle">
                             <i class="fas fa-list"></i>
                             <span>切换视图</span>
                         </div>
-<!--                        <div class="function-item" id="categorySettingsButton">-->
-<!--                            <i class="fas fa-sliders-h"></i>-->
-<!--                            <span>分类设置</span>-->
-<!--                        </div>-->
                         <div class="function-item" id="themeToggle">
                             <i class="fas fa-moon"></i>
                             <span>切换主题</span>
@@ -162,19 +148,10 @@
                     <i class="fas fa-search"></i>
                     <span>故事搜索</span>
                 </button>
-
-                <!-- 即时热榜按钮 -->
-<!--                <a href="https://nowhots.com/" target="_blank" rel="noopener noreferrer" class="hot-news-button">-->
-<!--                    <button class="action-button">-->
-<!--                        <img src="../img/host.png" alt="即时热榜" class="hot-news-icon">-->
-<!--                        <span>即时热榜</span>-->
-<!--                    </button>-->
-<!--                </a>-->
             </div>
 
             <!-- 分类区域 -->
             <div class="sidebar-categories">
-                <!-- <h3 class="sidebar-title">分类</h3> -->
                 <div class="sidebar-category-list" id="categoryTags">
                     <!-- 分类标签将通过API动态加载 -->
                 </div>
@@ -248,12 +225,8 @@
 
                 <div class="article-meta">
                     <div class="article-account">
-                        <!-- <div class="article-account-avatar">
-                            <i class="fas fa-book-reader"></i>
-                        </div> -->
                         <div class="article-account-info">
                             <div class="article-account-name" id="storyType"></div>
-                            <div class="article-date" id="storyReadTime"></div>
                         </div>
                     </div>
 
@@ -267,10 +240,6 @@
                             <img src="../img/replay.png" alt="重播" class="replay-icons">
                         </button>
                     </div>
-
-                    <!-- <div class="article-stats">
-                        <span><i class="far fa-file-alt"></i> <span id="storyLength"></span> 字</span>
-                    </div> -->
                 </div>
             </div>
 
@@ -296,84 +265,83 @@
         <img src="../img/opinion.png" alt="意见反馈">
     </a>
 
-    <script src="../js/supabase-client.js"></script>
-    <script src="../js/app.js"></script>
-
     <!-- 结构化数据标记 -->
     <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "小故事铺",
-        "alternateName": "故事阅读平台",
-        "url": "https://storynook.cn",
-        "description": "小故事铺是专业的故事阅读平台，提供睡前故事、儿童故事、历史故事、恐怖故事、爱情故事、励志故事等各类精彩小故事",
-        "keywords": "小故事,故事平台,睡前故事,儿童故事,历史故事,恐怖故事,爱情故事,励志故事",
-        "inLanguage": "zh-CN",
-        "potentialAction": {
-            "@type": "SearchAction",
-            "target": "https://storynook.cn/#search={search_term_string}",
-            "query-input": "required name=search_term_string"
-        },
-        "publisher": {
-            "@type": "Organization",
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
             "name": "小故事铺",
-            "logo": {
-                "@type": "ImageObject",
-                "url": "https://storynook.cn/img/story.png"
-            }
-        },
-        "mainEntity": {
-            "@type": "ItemList",
-            "name": "故事分类",
-            "itemListElement": [
-                {
-                    "@type": "ListItem",
-                    "position": 1,
-                    "name": "睡前故事",
-                    "description": "温馨治愈的睡前小故事，帮助您安然入睡"
-                },
-                {
-                    "@type": "ListItem",
-                    "position": 2,
-                    "name": "儿童故事",
-                    "description": "适合孩子阅读的有趣故事，寓教于乐"
-                },
-                {
-                    "@type": "ListItem",
-                    "position": 3,
-                    "name": "历史故事",
-                    "description": "了解历史的精彩故事，增长知识"
-                },
-                {
-                    "@type": "ListItem",
-                    "position": 4,
-                    "name": "恐怖故事",
-                    "description": "惊险刺激的恐怖小说，挑战胆量"
-                },
-                {
-                    "@type": "ListItem",
-                    "position": 5,
-                    "name": "爱情故事",
-                    "description": "浪漫感人的爱情小说，触动心灵"
-                },
-                {
-                    "@type": "ListItem",
-                    "position": 6,
-                    "name": "励志故事",
-                    "description": "激励人心的正能量故事，传递力量"
-                },
-                {
-                    "@type": "ListItem",
-                    "position": 7,
-                    "name": "规则怪谈",
-                    "description": "规则怪谈，鬼怪传说"
+            "alternateName": "故事阅读平台",
+            "url": "https://storynook.cn",
+            "description": "小故事铺是专业的故事阅读平台，提供睡前故事、儿童故事、历史故事、恐怖故事、爱情故事、励志故事等各类精彩小故事",
+            "keywords": "小故事,故事平台,睡前故事,儿童故事,历史故事,恐怖故事,爱情故事,励志故事",
+            "inLanguage": "zh-CN",
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://storynook.cn/#search={search_term_string}",
+                "query-input": "required name=search_term_string"
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "小故事铺",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://storynook.cn/img/story.png"
                 }
-            ]
+            },
+            "mainEntity": {
+                "@type": "ItemList",
+                "name": "故事分类",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "睡前故事",
+                        "description": "温馨治愈的睡前小故事，帮助您安然入睡"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "儿童故事",
+                        "description": "适合孩子阅读的有趣故事，寓教于乐"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": "历史故事",
+                        "description": "了解历史的精彩故事，增长知识"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 4,
+                        "name": "恐怖故事",
+                        "description": "惊险刺激的恐怖小说，挑战胆量"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 5,
+                        "name": "爱情故事",
+                        "description": "浪漫感人的爱情小说，触动心灵"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 6,
+                        "name": "励志故事",
+                        "description": "激励人心的正能量故事，传递力量"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 7,
+                        "name": "规则怪谈",
+                        "description": "规则怪谈，鬼怪传说"
+                    }
+                ]
+            }
         }
-    }
     </script>
 
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/app.js"></script>
     <script type="text/javascript" src="../live2d/js/live2d.js"></script>
     <script type="text/javascript" src="../live2d/js/message.js"></script>
     <script type="text/javascript">
