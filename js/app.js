@@ -551,10 +551,10 @@ function renderCategories() {
         const isActive = category.id === currentState.activeCategoryId;
         //<div class="tag-indicator"></div>
         html += `
-            <div class="filter-tag ${isActive ? 'active' : ''}" data-id="${category.id}">
+            <li class="filter-tag ${isActive ? 'active' : ''}" data-id="${category.id}">
                 
                 <span class="tag-text">${category.name}</span>
-            </div>
+            </li>
         `;
     });
 

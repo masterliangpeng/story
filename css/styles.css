@@ -2945,6 +2945,13 @@ header {
     backdrop-filter: blur(2px);
 }
 
+/* 侧边栏分类列表样式 */
+.sidebar-category-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
 /* 侧边栏中的分类标签样式 */
 .sidebar .filter-tag {
     display: flex;
@@ -2952,7 +2959,7 @@ header {
     align-items: center;
     /* 减小内边距 */
     padding: 14px 16px;
-    margin: 0;
+    margin: 0 0 8px 0;
     border-radius: 12px;
     background: var(--background-color);
     color: var(--text-primary);
@@ -2963,6 +2970,7 @@ header {
     width: 100%;
     justify-content: flex-start;
     text-align: left;
+    list-style: none;
 }
 
 .sidebar .filter-tag .tag-text {
