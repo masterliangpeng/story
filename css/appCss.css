@@ -74,6 +74,7 @@ body {
     z-index: 1000;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .header-content {
@@ -137,7 +138,7 @@ body {
 }
 
 .menu-icon i {
-    font-size: 18px;
+    font-size: 14px;
 }
 
 
@@ -154,6 +155,14 @@ body {
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
 }
+
+/*.category-scroll {*/
+/*    height: 100%;*/
+/*    overflow-x: auto;*/
+/*    overflow-y: hidden;*/
+/*    scrollbar-width: none;*/
+/*    -ms-overflow-style: none;*/
+/*}*/
 
 .category-scroll::-webkit-scrollbar {
     display: none;
@@ -181,7 +190,7 @@ body {
 }
 
 .category-item.active {
-    font-size: 16px;
+    font-size: 14px;
     color: #917242;
     transform: translateY(-1px);
     position: relative;
@@ -227,6 +236,7 @@ body {
     background-color: var(--surface-color);
     border-radius: var(--card-radius);
     padding: 16px;
+    border: 1px solid var(--border-color);
     cursor: pointer;
     transition: all var(--transition-time);
     box-shadow: var(--card-shadow);
@@ -390,6 +400,8 @@ body {
     position: sticky;
     top: 0;
     background-color: var(--surface-color);
+    border-bottom: 1px solid var(--border-color);
+    /*padding: 16px;*/
     display: flex;
     align-items: center;
     gap: 12px;
@@ -401,7 +413,7 @@ body {
 .back-btn {
     width: 40px;
     height: 40px;
-    /*border-radius: 50%;*/
+    border-radius: 50%;
     background-color: transparent;
     border: none;
     color: var(--text-secondary);
@@ -411,8 +423,7 @@ body {
     justify-content: center;
     transition: all var(--transition-time);
     flex-shrink: 0;
-    margin-left: 25px;
-    font-size: 15px;
+    margin-left: 14px;
 }
 
 .back-btn:hover {
@@ -437,6 +448,7 @@ body {
     padding: 13px;
     background-color: var(--surface-color);
     border-radius: var(--card-radius);
+    border: 1px solid var(--border-color);
 }
 
 .detail-text {
@@ -446,6 +458,7 @@ body {
     background-color: var(--surface-color);
     padding: 20px;
     border-radius: var(--card-radius);
+    border: 1px solid var(--border-color);
 }
 
 pre{
@@ -681,7 +694,7 @@ pre{
     width: 36px;
     height: 36px;
     border-radius: 18px;
-    background-color: var(--surface-color);
+    background-color: var(--background-color);
     border: none;
     color: var(--text-secondary);
     cursor: pointer;
@@ -689,6 +702,7 @@ pre{
     align-items: center;
     justify-content: center;
     transition: all var(--transition-time);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .modal-close:hover {
@@ -871,14 +885,6 @@ pre{
     z-index: 2500;
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
-}
-
-/* 禁用body滚动 */
-.no-scroll {
-    overflow: hidden !important;
-    position: fixed !important;
-    width: 100% !important;
-    height: 100% !important;
 }
 
 /* 响应式设计 */

@@ -412,7 +412,7 @@ function handleScroll() {
     if (currentState.isLoading || !currentState.hasMoreData) {
         return;
     }
-
+    console.log("我滚动了啦啦啦啦啦");
     // 判断是否滚动到页面底部附近
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const windowHeight = window.innerHeight;
