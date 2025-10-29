@@ -74,7 +74,7 @@ body {
     z-index: 1000;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    /*border-bottom: 1px solid rgba(255, 255, 255, 0.2);*/
 }
 
 .header-content {
@@ -236,7 +236,7 @@ body {
     background-color: var(--surface-color);
     border-radius: var(--card-radius);
     padding: 16px;
-    border: 1px solid var(--border-color);
+    /*border: 1px solid var(--border-color);*/
     cursor: pointer;
     transition: all var(--transition-time);
     box-shadow: var(--card-shadow);
@@ -400,7 +400,7 @@ body {
     position: sticky;
     top: 0;
     background-color: var(--surface-color);
-    border-bottom: 1px solid var(--border-color);
+    /*border-bottom: 1px solid var(--border-color);*/
     /*padding: 16px;*/
     display: flex;
     align-items: center;
@@ -448,7 +448,7 @@ body {
     padding: 13px;
     background-color: var(--surface-color);
     border-radius: var(--card-radius);
-    border: 1px solid var(--border-color);
+    /*border: 1px solid var(--border-color);*/
 }
 
 .detail-text {
@@ -458,7 +458,7 @@ body {
     background-color: var(--surface-color);
     padding: 20px;
     border-radius: var(--card-radius);
-    border: 1px solid var(--border-color);
+    /*border: 1px solid var(--border-color);*/
 }
 
 pre{
@@ -483,7 +483,7 @@ pre{
     background-color: rgba(255, 255, 255, 0.95);
     border-radius: 12px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    /*border: 1px solid rgba(0, 0, 0, 0.06);*/
     overflow: hidden;
     min-width: 180px;
     backdrop-filter: blur(20px);
@@ -573,7 +573,7 @@ pre{
 /* 深色主题下的设置按钮和菜单样式 */
 .dark-theme .settings-menu {
     background-color: rgba(30, 30, 30, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    /*border: 1px solid rgba(255, 255, 255, 0.1);*/
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
@@ -731,7 +731,7 @@ pre{
 
 .category-settings-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    /*grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));*/
     gap: 12px;
 }
 
