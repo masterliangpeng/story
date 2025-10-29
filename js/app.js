@@ -640,7 +640,7 @@ function renderStories(append = false, keepPosition = false) {
     }
 
     let html = '';
-    const startIndex = append ? currentState.stories.length - currentState.stories.slice(0, 10).length : 0;
+    const startIndex = append ? currentState.stories.length - currentState.stories.slice(0, 50).length : 0;
     const storiesToRender = currentState.stories.slice(startIndex);
 
     for (const story of storiesToRender) {
@@ -781,7 +781,6 @@ async function loadStories(append = false) {
 
             // 判断是否还有更多数据
             currentState.hasMoreData = newStories.length >= 50;
-
             // 根据append参数决定是追加还是替换数据
             if (append) {
                 currentState.stories = [...currentState.stories, ...newStories];
