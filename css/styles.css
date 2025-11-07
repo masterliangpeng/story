@@ -59,7 +59,7 @@ body {
 }
 
 /*隐藏滚动条*/
-/*::-webkit-scrollbar {display:none}*/
+::-webkit-scrollbar {display:none}
 
 /* 主题切换动画 */
 .theme-transition {
